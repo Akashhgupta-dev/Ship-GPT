@@ -17,6 +17,7 @@ export const CHAT_MESSAGES: ChatMessage[] = [
     content: "Explain engine overheating issue.",
   },
 ];
+// this is this 
 import { CategoryItem } from "@/utils/types";
 
 export const CATEGORIES: CategoryItem[] = [
