@@ -5,6 +5,8 @@ import NewChatButton from "@/components/widgets/new-chat-button";
 import { COLORS } from "@/utils/enum";
 import UserProfile from "@/components/widgets/user-profile";
 import { ChatItem } from "@/utils/types";
+import { useRouter } from "next/navigation";
+
 
 type Props = {
   chats: ChatItem[];
@@ -21,6 +23,7 @@ const Sidebar = ({
   onNewChat,
   onDeleteChat,
 }: Props) => {
+  const router = useRouter();
   return (
     <Box
       sx={{
@@ -114,7 +117,9 @@ const Sidebar = ({
       </Box>
       
       {/* Profile (bottom) */}
-      <Box
+      <Box onClick={()=>{
+        router.push("/account");
+      }}
         sx={{
           mt: "auto",
           pt: 1.5,
