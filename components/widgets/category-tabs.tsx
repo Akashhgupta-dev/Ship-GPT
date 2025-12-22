@@ -12,10 +12,17 @@ type Props = {
 
 const CategoryTabs = ({ value, categories, onChange }: Props) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        overflowX: { xs: "auto", md: "visible" },
+        "&::-webkit-scrollbar": { display: "none" },
+      }}
+    >
       <Tabs
         value={value}
         onChange={(_, newValue) => onChange(newValue)}
+        variant="scrollable"
+        scrollButtons={false}
         sx={{
           minHeight: 36,
           "& .MuiTabs-indicator": {
@@ -31,8 +38,9 @@ const CategoryTabs = ({ value, categories, onChange }: Props) => {
             sx={{
               textTransform: "none",
               minHeight: 36,
-              px: 2,
+              px: { xs: 1.5, md: 2 },
               borderRadius: "10px",
+              fontSize: { xs: 13, md: 14 },
               color: COLORS.TEXT_PRIMARY,
               "&.Mui-selected": {
                 backgroundColor: COLORS.SECONDARY,

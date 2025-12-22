@@ -15,12 +15,14 @@ const NewChatButton = ({ onClick }: Props) => {
       startIcon={<AddIcon />}
       fullWidth
       sx={{
-        mb: 2,
+        mb: { xs: 1.5, md: 2 },
         justifyContent: "flex-start",
         borderRadius: "12px",
         backgroundColor: COLORS.SECONDARY,
         color: COLORS.TEXT_PRIMARY,
         textTransform: "none",
+        fontSize: { xs: 13, md: 14 },
+        py: { xs: 1, md: 1.2 },
         "&:hover": {
           backgroundColor: COLORS.SECONDARY,
         },

@@ -2,8 +2,8 @@ import { ChatMessage, TabItem } from "@/utils/types";
 
 export const TOP_TABS: TabItem[] = [
   { label: "Mechanical" },
-  { label: "Troubleshooting" },
-  { label: "Compliance" },
+  //   { label: "Troubleshooting" },
+  //   { label: "Compliance" },
   { label: "Crewing" },
 ];
 
@@ -17,13 +17,12 @@ export const CHAT_MESSAGES: ChatMessage[] = [
     content: "Explain engine overheating issue.",
   },
 ];
-// this is 
 import { CategoryItem } from "@/utils/types";
 
 export const CATEGORIES: CategoryItem[] = [
   { label: "Mechanical", value: "mechanical" },
-  { label: "Troubleshooting", value: "troubleshooting" },
-  { label: "Compliance", value: "compliance" },
+  //   { label: "Troubleshooting", value: "troubleshooting" },
+  //   { label: "Compliance", value: "compliance" },
   { label: "Crewing", value: "crewing" },
 ];
 import { ChatHistoryItem } from "@/utils/types";
@@ -42,4 +41,10 @@ export const CHAT_HISTORY: ChatHistoryItem[] = [
     title: "Compliance checklist",
   },
 ];
-
+export const SHIPS = [
+  { label: "MV Ocean Star", value: "ocean_star" },
+  { label: "MV Blue Horizon", value: "blue_horizon" },
+  { label: "SS Neptune", value: "neptune" },
+  { label: "MV Sea Explorer", value: "sea_explorer" },
+  { label: "MV Atlantic Pearl", value: "atlantic_pearl" },
+];

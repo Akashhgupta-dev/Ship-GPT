@@ -14,9 +14,9 @@ const UserProfile = ({ name = "User" }: Props) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 1.5,
-        px: 1.5,
-        py: 1.2,
+        gap: { xs: 1, md: 1.5 },
+        px: { xs: 1, md: 1.5 },
+        py: { xs: 0.8, md: 1.2 },
         borderRadius: "10px",
         cursor: "pointer",
         backgroundColor: COLORS.SECONDARY,
@@ -25,22 +25,24 @@ const UserProfile = ({ name = "User" }: Props) => {
         },
       }}
     >
+      {/* Avatar */}
       <Avatar
         sx={{
-          width: 32,
-          height: 32,
+          width: { xs: 28, md: 32 },
+          height: { xs: 28, md: 32 },
           backgroundColor: COLORS.PRIMARY,
           color: COLORS.TEXT_PRIMARY,
-          fontSize: 14,
+          fontSize: { xs: 13, md: 14 },
         }}
       >
         U
       </Avatar>
 
+      {/* Username */}
       <Typography
         sx={{
           flex: 1,
-          fontSize: 14,
+          fontSize: { xs: 13, md: 14 },
           color: COLORS.TEXT_PRIMARY,
         }}
         noWrap
@@ -48,8 +50,12 @@ const UserProfile = ({ name = "User" }: Props) => {
         {name}
       </Typography>
 
+      {/* Dropdown icon */}
       <KeyboardArrowDownIcon
-        sx={{ color: COLORS.TEXT_PRIMARY, fontSize: 20 }}
+        sx={{
+          color: COLORS.TEXT_PRIMARY,
+          fontSize: { xs: 18, md: 20 },
+        }}
       />
     </Box>
   );

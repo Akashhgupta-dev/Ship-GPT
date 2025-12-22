@@ -12,36 +12,43 @@ const ChatMessages = ({ messages }: Props) => {
       sx={{
         flex: 1,
         overflowY: "auto",
-        py: 4,
+        py: { xs: 2, md: 4 },
       }}
     >
       <Box
         sx={{
-          maxWidth: "820px",
+          maxWidth: 820,
           mx: "auto",
-          px: 3,
+          px: { xs: 1.5, sm: 2, md: 3 },
         }}
       >
         {messages.map((msg, index) => (
           <Box
             key={index}
             sx={{
-              mb: 3,
+              mb: { xs: 2, md: 3 },
               display: "flex",
               justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
             }}
           >
             <Box
               sx={{
-                maxWidth: "70%",
-                p: 2,
+                maxWidth: { xs: "90%", md: "70%" },
+                p: { xs: 1.5, md: 2 },
                 borderRadius: "12px",
                 backgroundColor:
                   msg.role === "user" ? COLORS.PRIMARY : COLORS.SECONDARY,
                 color: COLORS.TEXT_PRIMARY,
               }}
             >
-              <Typography color={COLORS.TEXT_PRIMARY}>{msg.content}</Typography>
+              <Typography
+                sx={{
+                  fontSize: { xs: 14, md: 15 },
+                  color: COLORS.TEXT_PRIMARY,
+                }}
+              >
+                {msg.content}
+              </Typography>
             </Box>
           </Box>
         ))}

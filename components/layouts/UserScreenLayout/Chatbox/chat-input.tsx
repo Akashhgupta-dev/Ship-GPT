@@ -22,14 +22,17 @@ const ChatInput = ({ onSend }: Props) => {
     <Box
       sx={{
         backgroundColor: COLORS.SECONDARY,
-        py: 2,
+        py: { xs: 1.5, md: 2 },
+        position: "sticky",
+        bottom: 0,
+        zIndex: 5,
       }}
     >
       <Box
         sx={{
-          maxWidth: "820px",
+          maxWidth: 820,
           mx: "auto",
-          px: 3,
+          px: { xs: 1.3, sm: 2, md: 3 },
           display: "flex",
           alignItems: "center",
           gap: 1,
@@ -42,7 +45,7 @@ const ChatInput = ({ onSend }: Props) => {
           placeholder="Send a message..."
           variant="outlined"
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               handleSend();
             }
@@ -52,6 +55,7 @@ const ChatInput = ({ onSend }: Props) => {
             borderRadius: "12px",
             input: {
               color: COLORS.TEXT_PRIMARY,
+              fontSize: { xs: 16, md: 15 },
             },
             "& fieldset": {
               border: "none",
@@ -63,9 +67,10 @@ const ChatInput = ({ onSend }: Props) => {
           onClick={handleSend}
           sx={{
             color: COLORS.TEXT_PRIMARY,
+            p: { xs: 1, md: 1.2 },
           }}
         >
-          <SendIcon />
+          <SendIcon fontSize="small" />
         </IconButton>
       </Box>
     </Box>

@@ -1,6 +1,9 @@
 "use client";
+
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Box, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { InputBase } from "@mui/material";
 import NewChatButton from "@/components/widgets/new-chat-button";
 import { COLORS } from "@/utils/enum";
 import UserProfile from "@/components/widgets/user-profile";
@@ -24,12 +27,12 @@ const Sidebar = ({
   return (
     <Box
       sx={{
-        width: 280,
+        width: { xs: "100%", md: 280 },
         height: "100vh",
         backgroundColor: COLORS.PRIMARY,
-        borderRight: `1px solid ${COLORS.SECONDARY}`,
-        boxShadow: "2px 0 8px rgba(0,0,0,0.7)",
-        p: 2,
+        borderRight: { xs: "none", md: `1px solid ${COLORS.SECONDARY}` },
+        boxShadow: { xs: "none", md: "2px 0 8px rgba(0,0,0,0.7)" },
+        p: { xs: 1.5, md: 2 },
         display: "flex",
         flexDirection: "column",
       }}
@@ -37,15 +40,48 @@ const Sidebar = ({
       {/* Brand */}
       <Typography
         sx={{
-          fontSize: 22,
+          fontSize: { xs: 18, md: 22, lg: 26 },
           fontWeight: 700,
           color: COLORS.TEXT_PRIMARY,
-          mb: 2,
-          pl: 1,
+          mb: 4,
+          pl: 2,
         }}
       >
         ShipGPT
       </Typography>
+
+      {/* Search bar */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          px: 1.5,
+          py: 1,
+          mb: 2,
+          borderRadius: "10px",
+          backgroundColor: COLORS.SECONDARY,
+        }}
+      >
+        <SearchIcon
+          sx={{
+            fontSize: 18,
+            color: COLORS.TEXT_SECONDARY,
+          }}
+        />
+        <InputBase
+          placeholder="Search chats..."
+          sx={{
+            flex: 1,
+            fontSize: 16,
+            color: COLORS.TEXT_PRIMARY,
+            "::placeholder": {
+              color: COLORS.TEXT_SECONDARY,
+              opacity: 1,
+            },
+          }}
+        />
+      </Box>
 
       {/* New Chat */}
       <NewChatButton onClick={onNewChat} />
@@ -53,7 +89,7 @@ const Sidebar = ({
       {/* Section title */}
       <Typography
         sx={{
-          fontSize: 13,
+          fontSize: { xs: 14, md: 13 },
           color: COLORS.TEXT_SECONDARY,
           mb: 1,
         }}
@@ -62,7 +98,12 @@ const Sidebar = ({
       </Typography>
 
       {/* History list */}
-      <Box sx={{ flex: 1, overflowY: "auto" }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+        }}
+      >
         {chats.map((chat) => (
           <Box
             key={chat.id}
@@ -70,8 +111,8 @@ const Sidebar = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              px: 2,
-              py: 1.2,
+              px: { xs: 1.5, md: 2 },
+              py: { xs: 1, md: 1.2 },
               mb: 0.5,
               borderRadius: "10px",
               cursor: "pointer",
@@ -85,7 +126,7 @@ const Sidebar = ({
             onClick={() => onSelectChat(chat.id)}
           >
             <Typography
-              fontSize={14}
+              fontSize={{ xs: 13, md: 14 }}
               color={COLORS.TEXT_SECONDARY}
               noWrap
               sx={{ flex: 1 }}
@@ -93,7 +134,7 @@ const Sidebar = ({
               {chat.title}
             </Typography>
 
-            {/* 🔥 DELETE ICON */}
+            {/* Delete icon */}
             <DeleteOutlineIcon
               className="delete-btn"
               onClick={(e) => {
@@ -101,7 +142,7 @@ const Sidebar = ({
                 onDeleteChat(chat.id);
               }}
               sx={{
-                fontSize: 18,
+                fontSize: { xs: 16, md: 18 },
                 color: COLORS.TEXT_SECONDARY,
                 opacity: 0,
                 "&:hover": {
@@ -112,7 +153,7 @@ const Sidebar = ({
           </Box>
         ))}
       </Box>
-      
+
       {/* Profile (bottom) */}
       <Box
         sx={{
