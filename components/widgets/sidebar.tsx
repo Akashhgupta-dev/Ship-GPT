@@ -1,12 +1,11 @@
 "use client";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputBase } from "@mui/material";
+import { Box, Typography, InputBase } from "@mui/material";
 import NewChatButton from "@/components/widgets/new-chat-button";
-import { COLORS } from "@/utils/enum";
 import UserProfile from "@/components/widgets/user-profile";
+import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 
 type Props = {
@@ -37,20 +36,20 @@ const Sidebar = ({
         flexDirection: "column",
       }}
     >
-      {/* Brand */}
+      {/* BRAND */}
       <Typography
         sx={{
           fontSize: { xs: 18, md: 22, lg: 26 },
           fontWeight: 700,
           color: COLORS.TEXT_PRIMARY,
-          mb: 4,
-          pl: 2,
+          mb: 3,
+          pl: 1,
         }}
       >
         ShipGPT
       </Typography>
 
-      {/* Search bar */}
+      {/* SEARCH BAR */}
       <Box
         sx={{
           display: "flex",
@@ -73,7 +72,7 @@ const Sidebar = ({
           placeholder="Search chats..."
           sx={{
             flex: 1,
-            fontSize: 16,
+            fontSize: 14,
             color: COLORS.TEXT_PRIMARY,
             "::placeholder": {
               color: COLORS.TEXT_SECONDARY,
@@ -83,78 +82,76 @@ const Sidebar = ({
         />
       </Box>
 
-      {/* New Chat */}
+      {/* NEW CHAT BUTTON */}
       <NewChatButton onClick={onNewChat} />
 
-      {/* Section title */}
+      {/* RECENT TITLE */}
       <Typography
         sx={{
-          fontSize: { xs: 14, md: 13 },
+          fontSize: 13,
           color: COLORS.TEXT_SECONDARY,
-          mb: 1,
+          mt: 1,
+          mb: 1.5,
         }}
       >
         Recent
       </Typography>
 
-      {/* History list */}
-      <Box
-        sx={{
-          flex: 1,
-          overflowY: "auto",
-        }}
-      >
-        {chats.map((chat) => (
-          <Box
-            key={chat.id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              px: { xs: 1.5, md: 2 },
-              py: { xs: 1, md: 1.2 },
-              mb: 0.5,
-              borderRadius: "10px",
-              cursor: "pointer",
-              backgroundColor:
-                chat.id === activeChatId ? COLORS.SECONDARY : "transparent",
-              "&:hover": {
-                backgroundColor: COLORS.SECONDARY,
-                "& .delete-btn": { opacity: 1 },
-              },
-            }}
-            onClick={() => onSelectChat(chat.id)}
-          >
-            <Typography
-              fontSize={{ xs: 13, md: 14 }}
-              color={COLORS.TEXT_SECONDARY}
-              noWrap
-              sx={{ flex: 1 }}
-            >
-              {chat.title}
-            </Typography>
-
-            {/* Delete icon */}
-            <DeleteOutlineIcon
-              className="delete-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteChat(chat.id);
-              }}
+      {/* CHAT HISTORY */}
+      <Box sx={{ flex: 1, overflowY: "auto" }}>
+        {chats
+          .filter((chat) => chat.title !== "New Chat") // 🔥 IMPORTANT FIX
+          .map((chat) => (
+            <Box
+              key={chat.id}
+              onClick={() => onSelectChat(chat.id)}
               sx={{
-                fontSize: { xs: 16, md: 18 },
-                color: COLORS.TEXT_SECONDARY,
-                opacity: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                px: 2,
+                py: 1.2,
+                mb: 0.5,
+                borderRadius: "10px",
+                cursor: "pointer",
+                backgroundColor:
+                  chat.id === activeChatId ? COLORS.SECONDARY : "transparent",
                 "&:hover": {
-                  color: COLORS.TEXT_PRIMARY,
+                  backgroundColor: COLORS.SECONDARY,
+                  "& .delete-btn": { opacity: 1 },
                 },
               }}
-            />
-          </Box>
-        ))}
+            >
+              <Typography
+                fontSize={14}
+                color={COLORS.TEXT_SECONDARY}
+                noWrap
+                sx={{ flex: 1 }}
+              >
+                {chat.title}
+              </Typography>
+
+              {/* DELETE ICON */}
+              <DeleteOutlineIcon
+                className="delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteChat(chat.id);
+                }}
+                sx={{
+                  fontSize: 18,
+                  color: COLORS.TEXT_SECONDARY,
+                  opacity: 1,
+                  "&:hover": {
+                    color: COLORS.TEXT_PRIMARY,
+                  },
+                }}
+              />
+            </Box>
+          ))}
       </Box>
 
-      {/* Profile (bottom) */}
+      {/* PROFILE */}
       <Box
         sx={{
           mt: "auto",

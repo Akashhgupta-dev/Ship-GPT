@@ -32,7 +32,7 @@ const ChatInput = ({ onSend }: Props) => {
         sx={{
           maxWidth: 820,
           mx: "auto",
-          px: { xs: 1.3, sm: 2, md: 3 },
+          px: { xs: 1.5, sm: 2, md: 3 },
           display: "flex",
           alignItems: "center",
           gap: 1,

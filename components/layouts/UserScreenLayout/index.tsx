@@ -1,36 +1,53 @@
 "use client";
 
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import Sidebar from "@/components/widgets/sidebar";
 import TopBar from "@/components/widgets/top-bar";
 import MobileSidebarDrawer from "@/components/widgets/mobile-sidebar";
 import ChatMessages from "@/components/layouts/UserScreenLayout/Chatbox/chat-message";
 import ChatInput from "@/components/layouts/UserScreenLayout/Chatbox/chat-input";
+
 import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 
 const UserScreenLayout = () => {
-  // ALL CHAT STATE HERE
+  // GLOBAL CHAT STATE
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
-  // mobile sidebar state
+  // Mobile sidebar
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // NEW CHAT
-  const handleNewChat = () => {
-    const newChat: ChatItem = {
-      id: Date.now().toString(),
-      title: "New Chat",
-      messages: [
-        {
-          role: "assistant",
-          content: "Welcome to ShipGPT. I’m here to help you.",
-        },
-      ],
-    };
+  // StrictMode 
+  const hasInitializedChat = useRef(false);
 
+  // CHAT FACTORY 
+  const createNewChat = (): ChatItem => ({
+    id: Date.now().toString(),
+    title: "New Chat",
+    messages: [
+      {
+        role: "assistant",
+        content: "Welcome to ShipGPT. I’m here to help you.",
+      },
+    ],
+  });
+
+  // AUTO CREATE FIRST CHAT 
+  useEffect(() => {
+    if (!hasInitializedChat.current) {
+      const firstChat = createNewChat();
+      setChats([firstChat]);
+      setActiveChatId(firstChat.id);
+      hasInitializedChat.current = true;
+    }
+  }, []);
+
+  // MANUAL NEW CHAT
+  const handleNewChat = () => {
+    const newChat = createNewChat();
     setChats((prev) => [newChat, ...prev]);
     setActiveChatId(newChat.id);
   };
@@ -65,17 +82,21 @@ const UserScreenLayout = () => {
   // DELETE CHAT
   const handleDeleteChat = (id: string) => {
     setChats((prev) => {
-      const updatedChats = prev.filter(
-        (chat) => chat.id !== id
-      );
+      const remaining = prev.filter((chat) => chat.id !== id);
 
-      if (id === activeChatId) {
-        setActiveChatId(
-          updatedChats.length ? updatedChats[0].id : null
-        );
+      // If last chat deleted → create new one
+      if (remaining.length === 0) {
+        const newChat = createNewChat();
+        setActiveChatId(newChat.id);
+        return [newChat];
       }
 
-      return updatedChats;
+      // If active chat deleted → select first
+      if (id === activeChatId) {
+        setActiveChatId(remaining[0].id);
+      }
+
+      return remaining;
     });
   };
 
@@ -84,6 +105,7 @@ const UserScreenLayout = () => {
     (chat) => chat.id === activeChatId
   );
 
+  // UI
   return (
     <Box
       sx={{
@@ -103,7 +125,7 @@ const UserScreenLayout = () => {
         />
       </Box>
 
-      {/* MOBILE SIDEBAR (DRAWER) */}
+      {/* MOBILE SIDEBAR */}
       <MobileSidebarDrawer
         open={mobileSidebarOpen}
         onClose={() => setMobileSidebarOpen(false)}
@@ -132,7 +154,7 @@ const UserScreenLayout = () => {
           backgroundColor: COLORS.SECONDARY,
         }}
       >
-        {/* TOP BAR (hamburger control) */}
+        {/* TOP BAR */}
         <TopBar onMenuClick={() => setMobileSidebarOpen(true)} />
 
         {/* CHAT */}

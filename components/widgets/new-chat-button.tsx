@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { COLORS } from "@/utils/enum";
 
@@ -10,26 +10,41 @@ type Props = {
 
 const NewChatButton = ({ onClick }: Props) => {
   return (
-    <Button
+    <Box
       onClick={onClick}
-      startIcon={<AddIcon />}
-      fullWidth
       sx={{
-        mb: { xs: 1.5, md: 2 },
-        justifyContent: "flex-start",
+        display: "flex",
+        alignItems: "center",
+        gap: 1.2,
+        px: 1.5,
+        py: 1.4,
+        mb: 2,
         borderRadius: "12px",
         backgroundColor: COLORS.SECONDARY,
-        color: COLORS.TEXT_PRIMARY,
-        textTransform: "none",
-        fontSize: { xs: 13, md: 14 },
-        py: { xs: 1, md: 1.2 },
+        cursor: "pointer",
+        transition: "background 0.2s ease",
         "&:hover": {
           backgroundColor: COLORS.SECONDARY,
         },
       }}
     >
-      New Chat
-    </Button>
+      <AddIcon
+        sx={{
+          fontSize: 20,
+          color: COLORS.TEXT_PRIMARY,
+        }}
+      />
+
+      <Typography
+        sx={{
+          fontSize: 15,
+          lineHeight: "20px",
+          color: COLORS.TEXT_PRIMARY,
+        }}
+      >
+        New Chat
+      </Typography>
+    </Box>
   );
 };
 
