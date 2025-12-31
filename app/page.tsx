@@ -23,7 +23,7 @@ export default function Home() {
         backgroundSize: "cover",
         px: { xs: 6, sm: 0 },
         pb: { xs: 0, sm: 2 },
-        minHeight: { xs: "89vh", sm: "100vh", md: "100vh", lg: "100vh" },
+        minHeight: { xs: "100vh", sm: "100vh", md: "100vh", lg: "100vh" },
 
         display: "flex",
         justifyContent: "center",

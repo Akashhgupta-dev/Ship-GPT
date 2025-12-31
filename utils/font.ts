@@ -4,3 +4,8 @@ export const ScienceGothic = localFont({
     variable:"--font-science",
     display:"swap",
 });
+export const Poppins = localFont({
+    src:"../assets/fonts/Poppins.ttf",
+    variable:"--font-poppins",
+    display:"swap",
+});

@@ -1,26 +1,17 @@
 "use client";
 import UserScreenLayout from "@/components/layouts/UserScreenLayout";
 import { ScienceGothic } from "@/utils/font";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography,Snackbar, Alert } from "@mui/material";
 import { useFormik } from "formik";
 import { loginSchema } from "./schemas";
 import type { LoginFormValues } from "./schemas";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 
 export default function Form() {
+    const [open, setOpen] = useState(false);
     const router = useRouter();
-    const { values, handleChange, handleSubmit, errors, touched } =
-        useFormik<LoginFormValues>({
-            initialValues: {
-                email: "",
-                password: "",
-            },
-            validationSchema: loginSchema,
-            onSubmit: (values) => {
-                console.log(values);
-            },
-        });
-
     const formik = useFormik({
         initialValues:{
             email:"",
@@ -28,10 +19,15 @@ export default function Form() {
         },
         validationSchema:loginSchema,
         onSubmit:(values)=>{
-            console.log(values)
+            console.log(values);
+            setOpen(true);
+            router.push("/about");
         }
     })
+
     return (
+
+        
         <form onSubmit={formik.handleSubmit}>
             {/* EMAIL */}
             <div className="input-block">
@@ -91,9 +87,7 @@ export default function Form() {
                 </Box>
             </div>
 
-            <Button onClick={()=>{
-                router.push("/about");
-            }}
+            <Button 
                 type="submit"
                 variant="contained"
                 size="large"
@@ -108,7 +102,9 @@ export default function Form() {
             >
                 Login
             </Button>
+            
         </form>
+        
     );
 }
 
