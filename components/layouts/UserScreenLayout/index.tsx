@@ -32,7 +32,6 @@ const UserScreenLayout = () => {
     ],
   });
 
-  // AUTO CREATE FIRST CHAT
   useEffect(() => {
     if (!hasInitializedChat.current) {
       const firstChat = createNewChat();
