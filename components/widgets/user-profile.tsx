@@ -3,14 +3,22 @@
 import { Box, Typography, Avatar } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { COLORS } from "@/utils/enum";
+import { useRouter } from "next/navigation";
 
 type Props = {
   name?: string;
 };
 
 const UserProfile = ({ name = "User" }: Props) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/account");
+  };
+
   return (
     <Box
+      onClick={handleClick}
       sx={{
         display: "flex",
         alignItems: "center",

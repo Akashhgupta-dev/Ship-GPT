@@ -1,31 +1,27 @@
 "use client";
 import { Box, Typography } from "@mui/material";
-import Sidebar from "./Sidebar";
 import ProfileHeader from "./ProfileHeader";
 import ProfileInfoCard from "./ProfileInfoCard";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { ScienceGothic } from "@/utils/font";
 import { useState } from "react";
+import ProfileSidebar1 from "./ProfileSidebar1";
 
 const AccountPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <Box sx={{ display: "flex" }}>
-     
-      <Sidebar sidebarOpen={sidebarOpen} />
+      <ProfileSidebar1 sidebarOpen={sidebarOpen} />
 
-     
       <Box
         sx={{
           flex: 1,
           p: 2,
           bgcolor: "#212121",
           minHeight: "100vh",
-          
         }}
       >
-       
         <Box
           sx={{
             position: "fixed",
@@ -51,7 +47,6 @@ const AccountPage: React.FC = () => {
           )}
         </Box>
 
-       
         <Typography
           fontWeight={600}
           mb={2}

@@ -14,6 +14,6 @@ export const loginSchema = yup.object({
   password: yup
     .string()
     .required("Password is required")
-    .min(8, "Password must be minimum 8 characters")
+    .min(6, "Password must be minimum 6 characters")
     .max(16, "Password must be maximum 16 characters"),
 });

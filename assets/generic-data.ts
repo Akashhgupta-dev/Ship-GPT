@@ -4,7 +4,7 @@ export const TOP_TABS: TabItem[] = [
   { label: "Mechanical" },
   //   { label: "Troubleshooting" },
   //   { label: "Compliance" },
-  { label: "Crewing" },
+  { label: "Compliance" },
 ];
 
 export const CHAT_MESSAGES: ChatMessage[] = [
@@ -22,8 +22,7 @@ import { CategoryItem } from "@/utils/types";
 export const CATEGORIES: CategoryItem[] = [
   { label: "Mechanical", value: "mechanical" },
   //   { label: "Troubleshooting", value: "troubleshooting" },
-  //   { label: "Compliance", value: "compliance" },
-  { label: "Crewing", value: "crewing" },
+  { label: "Compliance", value: "compliance" },
 ];
 import { ChatHistoryItem } from "@/utils/types";
 
@@ -34,7 +33,7 @@ export const CHAT_HISTORY: ChatHistoryItem[] = [
   },
   {
     id: "2",
-    title: "Crew safety rules",
+    title: "Compliance checklist",
   },
   {
     id: "3",

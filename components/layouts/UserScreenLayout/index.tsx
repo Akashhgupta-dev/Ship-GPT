@@ -2,6 +2,7 @@
 
 import { Box } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
+import { chatControllers } from "@/api/chat";
 
 import Sidebar from "@/components/widgets/sidebar";
 import TopBar from "@/components/widgets/top-bar";
@@ -13,17 +14,13 @@ import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 
 const UserScreenLayout = () => {
-  // GLOBAL CHAT STATE
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
-  // Mobile sidebar
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // StrictMode 
   const hasInitializedChat = useRef(false);
 
-  // CHAT FACTORY 
   const createNewChat = (): ChatItem => ({
     id: Date.now().toString(),
     title: "New Chat",
@@ -35,7 +32,7 @@ const UserScreenLayout = () => {
     ],
   });
 
-  // AUTO CREATE FIRST CHAT 
+  // AUTO CREATE FIRST CHAT
   useEffect(() => {
     if (!hasInitializedChat.current) {
       const firstChat = createNewChat();
@@ -53,7 +50,7 @@ const UserScreenLayout = () => {
   };
 
   // SEND MESSAGE
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     if (!activeChatId || !text.trim()) return;
 
     setChats((prev) =>
@@ -61,37 +58,78 @@ const UserScreenLayout = () => {
         chat.id === activeChatId
           ? {
               ...chat,
-              title:
-                chat.title === "New Chat"
-                  ? text.slice(0, 30)
-                  : chat.title,
+              title: chat.title === "New Chat" ? text.slice(0, 30) : chat.title,
               messages: [
                 ...chat.messages,
                 { role: "user", content: text },
-                {
-                  role: "assistant",
-                  content: "Thanks for your message!",
-                },
+                { role: "assistant", content: "Typing..." },
               ],
             }
           : chat
       )
     );
+
+    chatControllers
+      .askAI({
+        query: text,
+        shipId: 3,
+        companyId: 2,
+      })
+      .then((res) => {
+        console.log("res", res);
+        const aiReply =
+          res.data?.data?.answer ||
+          res.data?.data?.response ||
+          res.data ||
+          "No response from AI";
+
+        setChats((prev) =>
+          prev.map((chat) =>
+            chat.id === activeChatId
+              ? {
+                  ...chat,
+                  messages: chat.messages.map((msg, index) =>
+                    index === chat.messages.length - 1
+                      ? { role: "assistant", content: aiReply }
+                      : msg
+                  ),
+                }
+              : chat
+          )
+        );
+      })
+      .catch((err) => {
+        console.error("AI Chat Error:", err);
+
+        setChats((prev) =>
+          prev.map((chat) =>
+            chat.id === activeChatId
+              ? {
+                  ...chat,
+                  messages: chat.messages.map((msg, index) =>
+                    index === chat.messages.length - 1
+                      ? {
+                          role: "assistant",
+                          content: "Something went wrong. Please try again.",
+                        }
+                      : msg
+                  ),
+                }
+              : chat
+          )
+        );
+      });
   };
 
-  // DELETE CHAT
   const handleDeleteChat = (id: string) => {
     setChats((prev) => {
       const remaining = prev.filter((chat) => chat.id !== id);
-
-      // If last chat deleted → create new one
       if (remaining.length === 0) {
         const newChat = createNewChat();
         setActiveChatId(newChat.id);
         return [newChat];
       }
 
-      // If active chat deleted → select first
       if (id === activeChatId) {
         setActiveChatId(remaining[0].id);
       }
@@ -100,12 +138,8 @@ const UserScreenLayout = () => {
     });
   };
 
-  // ACTIVE CHAT
-  const activeChat = chats.find(
-    (chat) => chat.id === activeChatId
-  );
+  const activeChat = chats.find((chat) => chat.id === activeChatId);
 
-  // UI
   return (
     <Box
       sx={{

@@ -1,13 +1,12 @@
-"use client"
+"use client";
 import { Box, Button, TextField, Typography, Paper, Link } from "@mui/material";
 import { ScienceGothic } from "@/utils/font";
-import Bship from '@/assets/images/Bship.jpg';
+import Bship from "@/assets/images/Bship.jpg";
 import { useFormik } from "formik";
 import { loginSchema } from "./schemas";
 import Form from "./Formm";
 
 export default function Home() {
-    
   return (
     <Box
       sx={{
@@ -19,7 +18,12 @@ export default function Home() {
       ),
       url(${Bship.src})
     `,
-        backgroundPosition: { xs: "center top", sm: "center center", md: "right center", lg: "right center" },
+        backgroundPosition: {
+          xs: "center top",
+          sm: "center center",
+          md: "right center",
+          lg: "right center",
+        },
         backgroundSize: "cover",
         px: { xs: 6, sm: 0 },
         pb: { xs: 0, sm: 2 },
@@ -46,7 +50,6 @@ export default function Home() {
           borderRadius: "25px",
           backgroundColor: "rgba(255, 255, 255, 0.75)",
           backdropFilter: "blur(0.5px)",
-
         }}
       >
         <Box
@@ -56,27 +59,42 @@ export default function Home() {
             width: { xs: "100%", sm: "100%", md: "100%", lg: "100%" },
           }}
         >
-          <Typography fontSize={{ xs: 30, sm: 30, md: 30, lg: 30 }} fontWeight={650} mb={{ xs: 2, sm: 2, md: 2, lg: 1 }} sx={{ color: "#1a2f39", fontFamily: ScienceGothic.style.fontFamily }}>
+          <Typography
+            fontSize={{ xs: 30, sm: 30, md: 30, lg: 30 }}
+            fontWeight={650}
+            mb={{ xs: 2, sm: 2, md: 2, lg: 1 }}
+            sx={{
+              color: "#1a2f39",
+              fontFamily: ScienceGothic.style.fontFamily,
+            }}
+          >
             SHIPGPT
           </Typography>
 
-          <Typography fontSize={{ xs: 16, sm: 10, md: 10, lg: 15 }} color="text.secondary" mb={{ xs: 2, sm: 2, md: 2, lg: 2 }} sx={{ fontFamily: ScienceGothic.style.fontFamily }}>
+          <Typography
+            fontSize={{ xs: 16, sm: 10, md: 10, lg: 15 }}
+            color="text.secondary"
+            mb={{ xs: 2, sm: 2, md: 2, lg: 2 }}
+            sx={{ fontFamily: ScienceGothic.style.fontFamily }}
+          >
             Login to your account
           </Typography>
 
-            <Form/>
-          
+          <Form />
+
           <Box sx={{ textAlign: "right", mt: 2 }}>
             <Link
               underline="hover"
-              sx={{ fontSize: { xs: 14, sm: 12, md: 12, lg: 14 }, color: "#1a2f39" }}
+              sx={{
+                fontSize: { xs: 14, sm: 12, md: 12, lg: 14 },
+                color: "#1a2f39",
+              }}
             >
               Forgot password?
             </Link>
           </Box>
         </Box>
       </Paper>
-
     </Box>
   );
 }
