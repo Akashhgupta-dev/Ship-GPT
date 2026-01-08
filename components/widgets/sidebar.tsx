@@ -7,6 +7,7 @@ import NewChatButton from "@/components/widgets/new-chat-button";
 // import UserProfile from "@/components/widgets/user-profile";
 import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
+import LogoutTab from "@/components/widgets/logout-tab";
 
 type Props = {
   chats: ChatItem[];
@@ -161,6 +162,9 @@ const Sidebar = ({
       >
         <UserProfile name="Ship User" />
       </Box> */}
+      <Box>
+        <LogoutTab />
+      </Box>
     </Box>
   );
 };

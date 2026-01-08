@@ -19,12 +19,14 @@ import { COLORS } from "@/utils/enum";
 import { useFormik } from "formik";
 import { loginValidationSchema } from "@/utils/validationSchema";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import loginBg from "@/public/images/Bship.jpg";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -35,49 +37,18 @@ export default function LoginPage() {
       setLoading(true);
       try {
         const response = await authControllers.login(values);
-        console.log("LOGIN RESPONSE FULL:", response);
-        console.log("LOGIN RESPONSE DATA:", response.data);
-
-        // Robust check for token in various common locations
-        const token =
-          // response.data?.access_token ||
-          response.data?.data?.access_token;
+        const token = response.data?.data?.access_token;
 
         if (token) {
-          console.log("Saving Access Token:", token);
           localStorage.setItem("accessToken", token);
-
-          // Try to extract and save user role
-          const user = response.data?.data?.user || response.data?.data;
-          const role =
-            user?.role ||
-            user?.user_role ||
-            (user?.isAdmin ? "ADMIN" : "") ||
-            (user?.isSuperAdmin ? "SUPER_ADMIN" : "");
-
-          if (role) {
-            console.log("Saving User Role:", role);
-            localStorage.setItem("userRole", role);
-          } else {
-            console.warn("User role not found in login response");
-            // Fallback: If no role found, maybe we act based on assumptions or future profile fetch
-          }
-
           router.push("/userscreen");
         } else {
-          console.warn(
-            "Available keys in response:",
-            Object.keys(response.data || {})
-          );
-          console.error("Access Token NOT found. Response was:", response.data);
-          alert(
-            "Login succeeded but token missing. check console for 'LOGIN RESPONSE DATA'"
-          );
+          alert("Login failed. Please try again.");
           setLoading(false);
         }
       } catch (error) {
-        console.error("Login failed", error);
-        alert("Login failed. Please check your credentials.");
+        console.error("Login failed:", error);
+        alert("Invalid email or password. Please try again.");
         setLoading(false);
       }
     },
@@ -86,34 +57,55 @@ export default function LoginPage() {
   return (
     <Box
       sx={{
+        position: "relative",
         height: "100vh",
         width: "100vw",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-start",
-        paddingLeft: { xs: 2, sm: 4, md: 8, lg: 12 },
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${loginBg.src})`,
-
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-        backgroundRepeat: "no-repeat",
+        justifyContent: { xs: "center", md: "flex-start" },
+        paddingLeft: { xs: 0, sm: 0, md: 8, lg: 12 },
+        paddingRight: { xs: 2, sm: 2, md: 0, lg: 0 },
         overflow: "hidden",
       }}
     >
+      <Image
+        src={loginBg}
+        alt="Ship background"
+        fill
+        priority
+        quality={100}
+        style={{
+          objectFit: "cover",
+          objectPosition: "center",
+          zIndex: -2,
+        }}
+      />
+
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
+          zIndex: -1,
+        }}
+      />
       <Card
         sx={{
-          width: 390,
+          width: { xs: "90%", sm: 400, md: 390, lg: 410 },
+          maxWidth: 450,
           backdropFilter: "blur(8px)",
           background: "rgba(255, 255, 255, 0.3)",
           color: COLORS.WHITE,
           borderRadius: 4,
           boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
           border: `1px solid ${COLORS.ACCENT}`,
-          ml: 24,
+          ml: { xs: 0, sm: 0, md: 8, lg: 24 },
         }}
       >
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           <Box textAlign="center" mb={3}>
             <Typography
               variant="h5"

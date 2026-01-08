@@ -4,17 +4,21 @@ import { Box, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { COLORS } from "@/utils/enum";
 import { ScienceGothic } from "@/utils/font";
+import { useRouter } from "next/navigation";
 
 type Props = {
-  onLogout?: () => void; // future API ke liye
+  onLogout?: () => void;
 };
 
 const LogoutTab = ({ onLogout }: Props) => {
+  const router = useRouter();
+
   const handleLogout = () => {
     if (onLogout) {
       onLogout();
     } else {
-      console.log("Logout clicked (API pending)");
+      localStorage.removeItem("accessToken");
+      router.push("/");
     }
   };
 
