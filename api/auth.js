@@ -8,4 +8,12 @@ export const authControllers = {
       throw error;
     }
   },
+  getUserById: async (id, role) => {
+    try {
+      let result = await secureApi.get(`/users/${id}`, { params: { user_role: role } });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

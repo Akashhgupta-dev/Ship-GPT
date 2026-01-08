@@ -4,7 +4,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Typography, InputBase } from "@mui/material";
 import NewChatButton from "@/components/widgets/new-chat-button";
-import UserProfile from "@/components/widgets/user-profile";
+// import UserProfile from "@/components/widgets/user-profile";
 import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 
@@ -151,7 +151,7 @@ const Sidebar = ({
           ))}
       </Box>
 
-      {/* PROFILE */}
+      {/* PROFILE
       <Box
         sx={{
           mt: "auto",
@@ -160,7 +160,7 @@ const Sidebar = ({
         }}
       >
         <UserProfile name="Ship User" />
-      </Box>
+      </Box> */}
     </Box>
   );
 };

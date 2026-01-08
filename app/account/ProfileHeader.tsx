@@ -1,6 +1,6 @@
 import { Paper, Avatar, Box, Typography } from "@mui/material";
 import { ScienceGothic , Poppins } from "@/utils/font";
-import user from "@/assets/images/user.jpg"
+import user from "@/public/images/user.jpg"
 
 const ProfileHeader: React.FC = () => {
   return (

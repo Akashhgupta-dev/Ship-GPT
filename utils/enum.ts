@@ -5,4 +5,5 @@ export const COLORS = {
   SECONDARY: "#212121",
   TEXT_PRIMARY: "#ffffff",
   TEXT_SECONDARY: "#e0e0e0",
-} as const;
+  ACCENT: "#333333",
+} 

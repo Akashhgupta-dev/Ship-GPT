@@ -1,100 +1,304 @@
 "use client";
-import { Box, Button, TextField, Typography, Paper, Link } from "@mui/material";
+import { useState } from "react";
+import { authControllers } from "@/api/auth";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { ScienceGothic } from "@/utils/font";
-import Bship from "@/assets/images/Bship.jpg";
+import { COLORS } from "@/utils/enum";
 import { useFormik } from "formik";
-import { loginSchema } from "./schemas";
-import Form from "./Formm";
+import { loginValidationSchema } from "@/utils/validationSchema";
+import { useRouter } from "next/navigation";
+import loginBg from "@/public/images/Bship.jpg";
 
-export default function Home() {
+export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: loginValidationSchema,
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const response = await authControllers.login(values);
+        console.log("LOGIN RESPONSE FULL:", response);
+        console.log("LOGIN RESPONSE DATA:", response.data);
+
+        // Robust check for token in various common locations
+        const token =
+          // response.data?.access_token ||
+          response.data?.data?.access_token;
+
+        if (token) {
+          console.log("Saving Access Token:", token);
+          localStorage.setItem("accessToken", token);
+
+          // Try to extract and save user role
+          const user = response.data?.data?.user || response.data?.data;
+          const role =
+            user?.role ||
+            user?.user_role ||
+            (user?.isAdmin ? "ADMIN" : "") ||
+            (user?.isSuperAdmin ? "SUPER_ADMIN" : "");
+
+          if (role) {
+            console.log("Saving User Role:", role);
+            localStorage.setItem("userRole", role);
+          } else {
+            console.warn("User role not found in login response");
+            // Fallback: If no role found, maybe we act based on assumptions or future profile fetch
+          }
+
+          router.push("/userscreen");
+        } else {
+          console.warn(
+            "Available keys in response:",
+            Object.keys(response.data || {})
+          );
+          console.error("Access Token NOT found. Response was:", response.data);
+          alert(
+            "Login succeeded but token missing. check console for 'LOGIN RESPONSE DATA'"
+          );
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Login failed", error);
+        alert("Login failed. Please check your credentials.");
+        setLoading(false);
+      }
+    },
+  });
+
   return (
     <Box
       sx={{
-        backgroundImage: `
-      linear-gradient(
-        to right,
-        rgba(28, 50, 54, 0.4),
-        rgba(255,255,255,0.1)
-      ),
-      url(${Bship.src})
-    `,
-        backgroundPosition: {
-          xs: "center top",
-          sm: "center center",
-          md: "right center",
-          lg: "right center",
-        },
-        backgroundSize: "cover",
-        px: { xs: 6, sm: 0 },
-        pb: { xs: 0, sm: 2 },
-        minHeight: { xs: "100vh", sm: "100vh", md: "100vh", lg: "100vh" },
-
+        height: "100vh",
+        width: "100vw",
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "flex-start",
+        paddingLeft: { xs: 2, sm: 4, md: 8, lg: 12 },
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${loginBg.src})`,
+
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        backgroundRepeat: "no-repeat",
+        overflow: "hidden",
       }}
     >
-      <Paper
-        elevation={0}
+      <Card
         sx={{
-          ml: { xs: 2, sm: 4, md: 10, lg: 35 },
-          mr: "auto",
-          p: { xs: 2, sm: 4, md: 4, lg: 2 },
-          pl: { xs: 2, sm: 1, md: 1, lg: 3 },
-          width: { xs: "100%", sm: "100%", md: "100%", lg: "300px" },
-          maxWidth: "390px",
-          height: "auto",
-          overflow: "hidden",
-          opacity: "1",
-          bgcolor: "transparent",
-          borderRadius: "25px",
-          backgroundColor: "rgba(255, 255, 255, 0.75)",
-          backdropFilter: "blur(0.5px)",
+          width: 390,
+          backdropFilter: "blur(8px)",
+          background: "rgba(255, 255, 255, 0.3)",
+          color: COLORS.WHITE,
+          borderRadius: 4,
+          boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
+          border: `1px solid ${COLORS.ACCENT}`,
+          ml: 24,
         }}
       >
-        <Box
-          sx={{
-            p: { xs: 1, sm: 2, md: 2, lg: 2 },
-            fontFamily: ScienceGothic.style.fontFamily,
-            width: { xs: "100%", sm: "100%", md: "100%", lg: "100%" },
-          }}
-        >
-          <Typography
-            fontSize={{ xs: 30, sm: 30, md: 30, lg: 30 }}
-            fontWeight={650}
-            mb={{ xs: 2, sm: 2, md: 2, lg: 1 }}
-            sx={{
-              color: "#1a2f39",
-              fontFamily: ScienceGothic.style.fontFamily,
-            }}
-          >
-            SHIPGPT
-          </Typography>
-
-          <Typography
-            fontSize={{ xs: 16, sm: 10, md: 10, lg: 15 }}
-            color="text.secondary"
-            mb={{ xs: 2, sm: 2, md: 2, lg: 2 }}
-            sx={{ fontFamily: ScienceGothic.style.fontFamily }}
-          >
-            Login to your account
-          </Typography>
-
-          <Form />
-
-          <Box sx={{ textAlign: "right", mt: 2 }}>
-            <Link
-              underline="hover"
+        <CardContent sx={{ p: 4 }}>
+          <Box textAlign="center" mb={3}>
+            <Typography
+              variant="h5"
               sx={{
-                fontSize: { xs: 14, sm: 12, md: 12, lg: 14 },
-                color: "#1a2f39",
+                fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                fontWeight: 600,
+                color: COLORS.WHITE,
               }}
             >
-              Forgot password?
-            </Link>
+              Ship Gpt
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                fontWeight: 600,
+                color: "rgba(255, 255, 255, 0.7)",
+                mt: 1,
+              }}
+            >
+              Welcome back, please login
+            </Typography>
           </Box>
-        </Box>
-      </Paper>
+          <form onSubmit={formik.handleSubmit}>
+            <TextField
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: COLORS.WHITE,
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: COLORS.WHITE,
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  "&.Mui-focused": {
+                    color: COLORS.WHITE,
+                  },
+                },
+                "& input": {
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  backgroundColor: "transparent !important",
+                  // Transition to keep background transparent
+                  transition:
+                    "background-color 5000s ease-in-out 0s !important",
+                  "&:-webkit-autofill": {
+                    transition:
+                      "background-color 5000s ease-in-out 0s !important",
+                    WebkitTextFillColor: `${COLORS.WHITE} !important`,
+                    // Force transparent shadow to avoid distinct color box if standard transparency fails
+                    WebkitBoxShadow:
+                      "0 0 0 1000px transparent inset !important",
+                    backgroundColor: "transparent !important",
+                    backgroundClip: "text !important",
+                  },
+                },
+              }}
+              fullWidth
+              label="Email"
+              id="email"
+              InputLabelProps={{ shrink: true }}
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.errors.email}
+            />
+            <TextField
+              sx={{
+                mt: 2,
+                "& .MuiOutlinedInput-root": {
+                  color: COLORS.WHITE,
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: COLORS.WHITE,
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  "&.Mui-focused": {
+                    color: COLORS.WHITE,
+                  },
+                },
+                "& input": {
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  backgroundColor: "transparent !important",
+                  transition:
+                    "background-color 5000s ease-in-out 0s !important",
+                  "&:-webkit-autofill": {
+                    transition:
+                      "background-color 5000s ease-in-out 0s !important",
+                    WebkitTextFillColor: `${COLORS.WHITE} !important`,
+                    WebkitBoxShadow:
+                      "0 0 0 1000px transparent inset !important",
+                    backgroundColor: "transparent !important",
+                    backgroundClip: "text !important",
+                  },
+                },
+              }}
+              fullWidth
+              label="Password"
+              id="password"
+              placeholder=" "
+              InputLabelProps={{ shrink: true }}
+              type={showPassword ? "text" : "password"}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                        sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.errors.password}
+            />
+            <Box textAlign="right" mt={1}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  color: COLORS.WHITE,
+                  opacity: 0.8,
+                  "&:hover": { opacity: 1 },
+                }}
+              >
+                Forgot password?
+              </Typography>
+            </Box>
+
+            <Button
+              type="submit"
+              fullWidth
+              size="large"
+              disabled={loading}
+              sx={{
+                mt: 3,
+                py: 1.3,
+                borderRadius: 3,
+                background: COLORS.WHITE,
+                color: COLORS.BLACK,
+                fontWeight: 600,
+                "&:hover": {
+                  background: "rgba(255, 255, 255, 0.9)",
+                },
+                "&:disabled": {
+                  background: "rgba(255, 255, 255, 0.6)",
+                  color: COLORS.BLACK,
+                },
+                fontFamily: `${ScienceGothic.style.fontFamily} !important`,
+              }}
+            >
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: COLORS.BLACK }} />
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </Box>
   );
 }
