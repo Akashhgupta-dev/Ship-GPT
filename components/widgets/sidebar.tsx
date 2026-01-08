@@ -4,10 +4,10 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Typography, InputBase } from "@mui/material";
 import NewChatButton from "@/components/widgets/new-chat-button";
-// import UserProfile from "@/components/widgets/user-profile";
 import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 import LogoutTab from "@/components/widgets/logout-tab";
+import { ScienceGothic } from "@/utils/font";
 
 type Props = {
   chats: ChatItem[];
@@ -40,6 +40,7 @@ const Sidebar = ({
       {/* BRAND */}
       <Typography
         sx={{
+          fontFamily: ScienceGothic.style.fontFamily,
           fontSize: { xs: 18, md: 22, lg: 26 },
           fontWeight: 700,
           color: COLORS.TEXT_PRIMARY,
