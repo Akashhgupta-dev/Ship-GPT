@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { authControllers } from "@/api/auth";
 import {
   Box,
@@ -15,6 +15,7 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { ScienceGothic } from "@/utils/font";
+import AppSnackbar from "@/components/widgets/snakbar";
 import { COLORS } from "@/utils/enum";
 import { useFormik } from "formik";
 import { loginValidationSchema } from "@/utils/validationSchema";
@@ -26,7 +27,20 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const [snakbar, setSnakbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnakbar({ ...snakbar, open: false });
+  };
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -41,14 +55,29 @@ export default function LoginPage() {
 
         if (token) {
           localStorage.setItem("accessToken", token);
-          router.push("/userscreen");
+          setSnakbar({
+            open: true,
+            message: "Login successful! Redirecting...",
+            severity: "success",
+          });
+          setTimeout(() => {
+            router.push("/userscreen");
+          }, 1500);
         } else {
-          alert("Login failed. Please try again.");
+          setSnakbar({
+            open: true,
+            message: "Login failed. Please try again.",
+            severity: "error",
+          });
           setLoading(false);
         }
       } catch (error) {
         console.error("Login failed:", error);
-        alert("Invalid email or password. Please try again.");
+        setSnakbar({
+          open: true,
+          message: "Invalid email or password. Please try again.",
+          severity: "error",
+        });
         setLoading(false);
       }
     },
@@ -291,6 +320,12 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
+      <AppSnackbar
+        open={snakbar.open}
+        message={snakbar.message}
+        severity={snakbar.severity as "success" | "error" | "warning" | "info"}
+        onClose={handleCloseSnackbar}
+      />
     </Box>
   );
 }

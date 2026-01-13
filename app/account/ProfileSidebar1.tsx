@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { Box, Typography, List, ListItemButton } from "@mui/material";
 import { ScienceGothic } from "@/utils/font";
 import LogoutTab from "@/components/widgets/logout-tab";
-import { useState } from "react";
+
 const Sidebar: React.FC<{ sidebarOpen: boolean }> = ({ sidebarOpen }) => {
   return (
     <Box

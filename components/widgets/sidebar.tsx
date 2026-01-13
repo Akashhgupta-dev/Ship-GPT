@@ -15,6 +15,7 @@ type Props = {
   onSelectChat: (id: string) => void;
   onNewChat: () => void;
   onDeleteChat: (id: string) => void;
+  onLogout: () => void;
 };
 
 const Sidebar = ({
@@ -23,6 +24,7 @@ const Sidebar = ({
   onSelectChat,
   onNewChat,
   onDeleteChat,
+  onLogout,
 }: Props) => {
   return (
     <Box
@@ -42,7 +44,7 @@ const Sidebar = ({
         sx={{
           fontFamily: ScienceGothic.style.fontFamily,
           fontSize: { xs: 18, md: 22, lg: 26 },
-          fontWeight: 700,
+          fontWeight: 600,
           color: COLORS.TEXT_PRIMARY,
           mb: 3,
           pl: 1,
@@ -67,6 +69,7 @@ const Sidebar = ({
         <SearchIcon
           sx={{
             fontSize: 18,
+
             color: COLORS.TEXT_SECONDARY,
           }}
         />
@@ -75,6 +78,7 @@ const Sidebar = ({
           sx={{
             flex: 1,
             fontSize: 14,
+            fontFamily: ScienceGothic.style.fontFamily,
             color: COLORS.TEXT_PRIMARY,
             "::placeholder": {
               color: COLORS.TEXT_SECONDARY,
@@ -92,6 +96,7 @@ const Sidebar = ({
         sx={{
           fontSize: 13,
           color: COLORS.TEXT_SECONDARY,
+          fontFamily: ScienceGothic.style.fontFamily,
           mt: 1,
           mb: 1.5,
         }}
@@ -102,7 +107,7 @@ const Sidebar = ({
       {/* CHAT HISTORY */}
       <Box sx={{ flex: 1, overflowY: "auto" }}>
         {chats
-          .filter((chat) => chat.title !== "New Chat") // 🔥 IMPORTANT FIX
+          .filter((chat) => chat.title !== "New Chat") 
           .map((chat) => (
             <Box
               key={chat.id}
@@ -115,6 +120,7 @@ const Sidebar = ({
                 py: 1.2,
                 mb: 0.5,
                 borderRadius: "10px",
+                
                 cursor: "pointer",
                 backgroundColor:
                   chat.id === activeChatId ? COLORS.SECONDARY : "transparent",
@@ -127,6 +133,7 @@ const Sidebar = ({
               <Typography
                 fontSize={14}
                 color={COLORS.TEXT_SECONDARY}
+                fontFamily={ScienceGothic.style.fontFamily}
                 noWrap
                 sx={{ flex: 1 }}
               >
@@ -164,7 +171,7 @@ const Sidebar = ({
         <UserProfile name="Ship User" />
       </Box> */}
       <Box>
-        <LogoutTab />
+        <LogoutTab onLogout={onLogout} />
       </Box>
     </Box>
   );

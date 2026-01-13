@@ -1,5 +1,6 @@
-import { Paper, Typography, Box, Button } from "@mui/material";
-import { ScienceGothic , Poppins } from "@/utils/font";
+import React from "react";
+import { Paper, Typography, Box } from "@mui/material";
+import { ScienceGothic, Poppins } from "@/utils/font";
 
 type RowProps = {
   label: string;
@@ -19,7 +20,7 @@ const Row: React.FC<RowProps> = ({ label, value }) => (
       sx={{
         fontFamily: ScienceGothic.style.fontFamily,
         fontWeight: "400",
-        fontSize:{xs:"14px",md:"20px",lg:"18px"}
+        fontSize: { xs: "14px", md: "20px", lg: "18px" },
       }}
     >
       {label}
@@ -29,7 +30,7 @@ const Row: React.FC<RowProps> = ({ label, value }) => (
       color="#fff"
       sx={{
         fontFamily: Poppins.style.fontFamily,
-        fontSize:{xs:"14px",md:"20px",lg:"18px"}
+        fontSize: { xs: "14px", md: "20px", lg: "18px" },
       }}
     >
       {value}
@@ -42,7 +43,7 @@ const ProfileInfoCard: React.FC = () => {
     <Paper
       elevation={0}
       sx={{
-        p: {xs:"16px",md:"20px",lg:"18px"},
+        p: { xs: "16px", md: "20px", lg: "18px" },
         borderRadius: 3,
         backgroundColor: "#303030",
       }}

@@ -1,10 +1,9 @@
 "use client";
+import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
-import ProfileHeader from "./ProfileHeader";
 import ProfileInfoCard from "./ProfileInfoCard";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { ScienceGothic } from "@/utils/font";
-import { useState } from "react";
 import ProfileSidebar1 from "./ProfileSidebar1";
 
 const AccountPage: React.FC = () => {
@@ -60,7 +59,7 @@ const AccountPage: React.FC = () => {
           SHIPGPT
         </Typography>
 
-        <ProfileHeader />
+        {/* <ProfileHeader /> */}
         <ProfileInfoCard />
       </Box>
     </Box>

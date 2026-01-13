@@ -10,6 +10,7 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { CategoryItem } from "@/utils/types";
 import { COLORS } from "@/utils/enum";
+import { Poppins } from "@/utils/font";
 
 type Props = {
   value: string;
@@ -41,8 +42,10 @@ const CategorySelector = ({ value, categories, onChange }: Props) => {
       <Typography
         fontWeight={500}
         color={COLORS.TEXT_PRIMARY}
+        
         sx={{
           fontSize: { xs: 13, md: 14 },
+          
         }}
       >
         {selectedLabel}

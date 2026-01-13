@@ -3,6 +3,7 @@
 import { Tabs, Tab, Box } from "@mui/material";
 import { CategoryItem } from "@/utils/types";
 import { COLORS } from "@/utils/enum";
+import { ScienceGothic } from "@/utils/font";
 
 type Props = {
   value: string;
@@ -41,6 +42,7 @@ const CategoryTabs = ({ value, categories, onChange }: Props) => {
               px: { xs: 1.5, md: 2 },
               borderRadius: "10px",
               fontSize: { xs: 13, md: 14 },
+              fontFamily: ScienceGothic.style.fontFamily,
               color: COLORS.TEXT_PRIMARY,
               "&.Mui-selected": {
                 backgroundColor: COLORS.SECONDARY,

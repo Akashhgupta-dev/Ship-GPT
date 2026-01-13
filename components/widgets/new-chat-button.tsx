@@ -4,6 +4,8 @@ import { Box, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { COLORS } from "@/utils/enum";
 
+import { ScienceGothic } from "@/utils/font";
+
 type Props = {
   onClick: () => void;
 };
@@ -40,6 +42,7 @@ const NewChatButton = ({ onClick }: Props) => {
           fontSize: 15,
           lineHeight: "20px",
           color: COLORS.TEXT_PRIMARY,
+          fontFamily: ScienceGothic.style.fontFamily,
         }}
       >
         New Chat

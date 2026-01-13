@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { ChatMessage } from "@/utils/types";
 import { COLORS } from "@/utils/enum";
+import { Poppins } from "@/utils/font";
 
 type Props = {
   messages: ChatMessage[];
@@ -45,6 +46,7 @@ const ChatMessages = ({ messages }: Props) => {
                 sx={{
                   fontSize: { xs: 14, md: 15 },
                   color: COLORS.TEXT_PRIMARY,
+                  fontFamily: Poppins.style.fontFamily,
                 }}
               >
                 {msg.content}

@@ -2,15 +2,25 @@
 
 import { Box, IconButton, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { COLORS } from "@/utils/enum";
+import { Poppins } from "@/utils/font";
 
 type Props = {
   onSend: (text: string) => void;
+  activeChatId: string | null;
 };
 
-const ChatInput = ({ onSend }: Props) => {
+const ChatInput = ({ onSend, activeChatId }: Props) => {
   const [value, setValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Focus the input field whenever activeChatId changes (new chat or switching chats)
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [activeChatId]);
 
   const handleSend = () => {
     if (!value.trim()) return;
@@ -41,6 +51,7 @@ const ChatInput = ({ onSend }: Props) => {
         <TextField
           fullWidth
           value={value}
+          inputRef={inputRef}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Send a message..."
           variant="outlined"
@@ -56,6 +67,10 @@ const ChatInput = ({ onSend }: Props) => {
             input: {
               color: COLORS.TEXT_PRIMARY,
               fontSize: { xs: 16, md: 15 },
+              fontFamily: Poppins.style.fontFamily,
+            },
+            "& .MuiInputBase-input::placeholder": {
+              fontFamily: Poppins.style.fontFamily,
             },
             "& fieldset": {
               border: "none",

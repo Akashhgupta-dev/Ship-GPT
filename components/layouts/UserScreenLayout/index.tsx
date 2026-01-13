@@ -12,12 +12,44 @@ import ChatInput from "@/components/layouts/UserScreenLayout/Chatbox/chat-input"
 
 import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
+import AppSnackbar from "@/components/widgets/snakbar";
+import { useRouter } from "next/navigation";
+import { Poppins } from "@/utils/font";
 
 const UserScreenLayout = () => {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const router = useRouter();
+
+  const [snakbar, setSnakbar] = useState({
+    open: false,
+    message: "",
+    severity: "info" as "success" | "error" | "warning" | "info",
+  });
+
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnakbar({ ...snakbar, open: false });
+  };
+
+  const handleLogout = () => {
+    setSnakbar({
+      open: true,
+      message: "Logging out...",
+      severity: "info",
+    });
+    localStorage.removeItem("accessToken");
+    setTimeout(() => {
+      router.push("/");
+    }, 1500);
+  };
 
   const hasInitializedChat = useRef(false);
 
@@ -155,6 +187,7 @@ const UserScreenLayout = () => {
           onSelectChat={setActiveChatId}
           onNewChat={handleNewChat}
           onDeleteChat={handleDeleteChat}
+          onLogout={handleLogout}
         />
       </Box>
 
@@ -174,6 +207,7 @@ const UserScreenLayout = () => {
             setMobileSidebarOpen(false);
           },
           onDeleteChat: handleDeleteChat,
+          onLogout: handleLogout,
         }}
       />
 
@@ -194,8 +228,14 @@ const UserScreenLayout = () => {
         <ChatMessages messages={activeChat?.messages || []} />
 
         {/* INPUT */}
-        <ChatInput onSend={handleSendMessage} />
+        <ChatInput onSend={handleSendMessage} activeChatId={activeChatId} />
       </Box>
+      <AppSnackbar
+        open={snakbar.open}
+        message={snakbar.message}
+        severity={snakbar.severity}
+        onClose={handleCloseSnackbar}
+      />
     </Box>
   );
 };
