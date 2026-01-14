@@ -1,5 +1,6 @@
-const baseUrl = "https://13.49.158.124/";
+const baseUrl = "https://ai.shipsmithgroup.com/";
 export const serverConstant = {
   authenticationUrls: `${baseUrl}api/auth`,
   chatUrls: `${baseUrl}api/`,
 };
+
