@@ -41,8 +41,9 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
       <Box
         sx={{
           maxWidth: 820,
+          width: "100%",
           mx: "auto",
-          px: { xs: 1.5, sm: 2, md: 3 },
+          px: { xs: 2, sm: 2, md: 3 },
           display: "flex",
           alignItems: "center",
           gap: 1,

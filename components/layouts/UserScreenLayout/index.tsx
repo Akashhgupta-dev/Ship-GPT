@@ -114,20 +114,33 @@ const UserScreenLayout = () => {
           res.data ||
           "No response from AI";
 
-        setChats((prev) =>
-          prev.map((chat) =>
-            chat.id === activeChatId
-              ? {
-                  ...chat,
-                  messages: chat.messages.map((msg, index) =>
-                    index === chat.messages.length - 1
-                      ? { role: "assistant", content: aiReply }
-                      : msg
-                  ),
-                }
-              : chat
-          )
-        );
+        // TYPEWRITER EFFECT
+        const words = aiReply.split(" ");
+        let currentText = "";
+        let wordIndex = 0;
+
+        const interval = setInterval(() => {
+          if (wordIndex < words.length) {
+            currentText += (wordIndex === 0 ? "" : " ") + words[wordIndex];
+            setChats((prev) =>
+              prev.map((chat) =>
+                chat.id === activeChatId
+                  ? {
+                      ...chat,
+                      messages: chat.messages.map((msg, index) =>
+                        index === chat.messages.length - 1
+                          ? { role: "assistant", content: currentText }
+                          : msg
+                      ),
+                    }
+                  : chat
+              )
+            );
+            wordIndex++;
+          } else {
+            clearInterval(interval);
+          }
+        }, 30); // Adjust speed here
       })
       .catch((err) => {
         console.error("AI Chat Error:", err);
