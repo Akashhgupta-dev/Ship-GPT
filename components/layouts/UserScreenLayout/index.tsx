@@ -93,7 +93,7 @@ const UserScreenLayout = () => {
               messages: [
                 ...chat.messages,
                 { role: "user", content: text },
-                { role: "assistant", content: "Typing..." },
+                { role: "assistant", content: "Thinking..." },
               ],
             }
           : chat

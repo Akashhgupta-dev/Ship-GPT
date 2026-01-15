@@ -101,9 +101,43 @@ const ChatMessages = ({ messages }: Props) => {
                   },
                 }}
               >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {msg.content.replace(/\s+([a-z\d]\))/gi, "\n\n$1")}
-                </ReactMarkdown>
+                {msg.content === "Thinking..." ? (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    Thinking
+                    <Box
+                      component="span"
+                      sx={{
+                        display: "inline-flex",
+                        gap: "2px",
+                        "& span": {
+                          width: "3px",
+                          height: "3px",
+                          borderRadius: "50%",
+                          backgroundColor: COLORS.TEXT_PRIMARY,
+                          animation: "dots 1.4s infinite ease-in-out",
+                          "&:nth-of-type(2)": { animationDelay: "0.2s" },
+                          "&:nth-of-type(3)": { animationDelay: "0.4s" },
+                          "&:nth-of-type(4)": { animationDelay: "0.6s" },
+                          "&:nth-of-type(5)": { animationDelay: "0.8s" },
+                        },
+                        "@keyframes dots": {
+                          "0%, 80%, 100%": { opacity: 0 },
+                          "40%": { opacity: 1 },
+                        },
+                      }}
+                    >
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </Box>
+                  </Box>
+                ) : (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {(msg.content || "").replace(/\s+([a-z\d]\))/gi, "\n\n$1")}
+                  </ReactMarkdown>
+                )}
               </Box>
             </Box>
           </Box>
