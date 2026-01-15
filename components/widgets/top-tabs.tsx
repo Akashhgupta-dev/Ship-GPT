@@ -24,8 +24,9 @@ const TopTabs = ({ tabs }: Props) => {
           sx={{
             borderRadius: "20px",
             textTransform: "none",
-            fontSize: { xs: 13, md: 14 },
-            px: { xs: 1.5, md: 2 },
+            fontSize: { xs: 11, md: 14 },
+            px: { xs: 1, md: 2 },
+            py: { xs: 0.5, md: 1 },
             whiteSpace: "nowrap",
           }}
         >

@@ -33,7 +33,7 @@ const ChatMessages = ({ messages }: Props) => {
     >
       <Box
         sx={{
-          maxWidth: 820,
+          maxWidth: 920,
           width: "100%",
           mx: "auto",
           px: { xs: 1.5, sm: 2, md: 3 },
@@ -44,6 +44,7 @@ const ChatMessages = ({ messages }: Props) => {
           <Box
             key={index}
             sx={{
+              mr: msg.role === "user" ? { xs: 2, md: 6.5 } : 0,
               mb: { xs: 2, md: 3 },
               display: "flex",
               justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
@@ -52,8 +53,11 @@ const ChatMessages = ({ messages }: Props) => {
             <Box
               sx={{
                 maxWidth: { xs: "90%", md: "85%" },
-                p: msg.role === "user" ? "10px 24px" : { xs: 1, md: 1.5 },
-                borderRadius: msg.role === "user" ? "30px" : "12px",
+                p:
+                  msg.role === "user"
+                    ? { xs: "8px 16px", md: "10px 24px" }
+                    : { xs: 1, md: 1.5 },
+                borderRadius: msg.role === "user" ? "16px" : "12px",
                 backgroundColor:
                   msg.role === "user" ? COLORS.ACCENT : "transparent",
                 color: COLORS.TEXT_PRIMARY,
@@ -98,7 +102,7 @@ const ChatMessages = ({ messages }: Props) => {
                 }}
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {msg.content}
+                  {msg.content.replace(/\s+([a-z\d]\))/gi, "\n\n$1")}
                 </ReactMarkdown>
               </Box>
             </Box>

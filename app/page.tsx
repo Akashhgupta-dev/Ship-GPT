@@ -213,8 +213,8 @@ export default function LoginPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: { xs: "center", md: "flex-start" },
-        paddingLeft: { xs: 0, sm: 0, md: 8, lg: 12 },
-        paddingRight: { xs: 2, sm: 2, md: 0, lg: 0 },
+        paddingLeft: { md: 8, lg: 12 },
+        paddingRight: { md: 0, lg: 0 },
         overflow: "hidden",
       }}
     >
@@ -244,21 +244,21 @@ export default function LoginPage() {
       />
       <Card
         sx={{
-          width: { xs: "90%", sm: 400, md: 390, lg: 410 },
-          maxWidth: 450,
+          width: { xs: "95%", sm: 420, md: 390, lg: 410 },
+          maxWidth: { xs: "95%", sm: 450 },
           backdropFilter: "blur(2px)",
           background: "rgba(255, 255, 255, 0.2)",
           color: COLORS.WHITE,
           borderRadius: 4,
           boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
-          border: `1px solid ${COLORS.ACCENT}`,
-          ml: { xs: 0, sm: 0, md: 8, lg: 24 },
+          mx: { xs: "auto", sm: "auto" },
+          ml: { md: 8, lg: 24 },
           minHeight: { xs: "auto", sm: 380 },
         }}
       >
         <CardContent
           sx={{
-            p: { xs: 3, sm: 4 },
+            p: { xs: 2.5, sm: 4 },
             display: "flex",
             flexDirection: "column",
             minHeight: { xs: "auto", sm: 380 },

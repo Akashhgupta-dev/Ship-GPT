@@ -32,7 +32,7 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
     <Box
       sx={{
         backgroundColor: COLORS.SECONDARY,
-        py: { xs: 1.5, md: 2 },
+        py: { xs: 1, md: 2 },
         position: "sticky",
         bottom: 0,
         zIndex: 5,
@@ -40,7 +40,7 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
     >
       <Box
         sx={{
-          maxWidth: 820,
+          maxWidth: 920,
           width: "100%",
           mx: "auto",
           px: { xs: 2, sm: 2, md: 3 },
@@ -64,14 +64,19 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
           }}
           sx={{
             backgroundColor: COLORS.PRIMARY,
-            borderRadius: "12px",
+            borderRadius: "16px",
+            "& .MuiInputBase-root": {
+              borderRadius: "16px",
+            },
             input: {
               color: COLORS.TEXT_PRIMARY,
-              fontSize: { xs: 16, md: 15 },
+              fontSize: { xs: 13, md: 15 },
               fontFamily: Poppins.style.fontFamily,
+              py: { xs: 2, md: 2.2 },
             },
             "& .MuiInputBase-input::placeholder": {
               fontFamily: Poppins.style.fontFamily,
+              fontSize: { xs: 13, md: 15 },
             },
             "& fieldset": {
               border: "none",
@@ -83,10 +88,10 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
           onClick={handleSend}
           sx={{
             color: COLORS.TEXT_PRIMARY,
-            p: { xs: 1, md: 1.2 },
+            p: { xs: 0.8, md: 1.2 },
           }}
         >
-          <SendIcon fontSize="small" />
+          <SendIcon fontSize="medium" />
         </IconButton>
       </Box>
     </Box>

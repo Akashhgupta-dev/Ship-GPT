@@ -38,10 +38,11 @@ const CategoryTabs = ({ value, categories, onChange }: Props) => {
             label={cat.label}
             sx={{
               textTransform: "none",
-              minHeight: 36,
-              px: { xs: 1.5, md: 2 },
+              minHeight: { xs: 32, md: 36 },
+              minWidth: "auto",
+              px: { xs: 1, md: 2 },
               borderRadius: "10px",
-              fontSize: { xs: 13, md: 14 },
+              fontSize: { xs: 12, md: 14 },
               fontFamily: ScienceGothic.style.fontFamily,
               color: COLORS.TEXT_PRIMARY,
               "&.Mui-selected": {

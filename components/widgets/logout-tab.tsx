@@ -44,12 +44,13 @@ const LogoutTab = ({ onLogout }: Props) => {
       <Typography
         sx={{
           fontFamily: ScienceGothic.style.fontFamily,
-          fontSize: { xs: "22px", md: "16px", lg: "16px" },
+          fontSize: { xs: "15px", md: "15px" },
+          lineHeight: "20px",
         }}
       >
         Logout
       </Typography>
-      <LogoutIcon fontSize="small" />
+      <LogoutIcon sx={{ fontSize: 20 }} />
     </Box>
   );
 };

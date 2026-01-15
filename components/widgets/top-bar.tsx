@@ -20,7 +20,7 @@ const TopBar = ({ onMenuClick }: Props) => {
     <Box
       sx={{
         px: { xs: 1.5, md: 3 },
-        py: { xs: 1.5, md: 2 },
+        py: { xs: 1.2, md: 1.5 },
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -33,12 +33,21 @@ const TopBar = ({ onMenuClick }: Props) => {
       }}
     >
       {/* LEFT */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: { xs: 0.5, md: 1 },
+          flex: 1,
+          overflow: "hidden",
+        }}
+      >
         {/* Mobile hamburger */}
         <IconButton
           sx={{
             display: { xs: "flex", md: "none" },
             color: COLORS.TEXT_PRIMARY,
+            p: 0.5,
           }}
           onClick={onMenuClick}
         >

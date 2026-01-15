@@ -34,7 +34,7 @@ const Sidebar = ({
         backgroundColor: COLORS.PRIMARY,
         borderRight: { xs: "none", md: `1px solid ${COLORS.SECONDARY}` },
         boxShadow: { xs: "none", md: "2px 0 8px rgba(0,0,0,0.7)" },
-        p: { xs: 1.5, md: 2 },
+        p: { xs: 2, md: 2 },
         display: "flex",
         flexDirection: "column",
       }}
@@ -43,11 +43,11 @@ const Sidebar = ({
       <Typography
         sx={{
           fontFamily: ScienceGothic.style.fontFamily,
-          fontSize: { xs: 18, md: 22, lg: 26 },
+          fontSize: { xs: 20, md: 22, lg: 26 },
           fontWeight: 600,
           color: COLORS.TEXT_PRIMARY,
           mb: 3,
-          pl: 1,
+          pl: 0.5,
         }}
       >
         ShipGPT
@@ -80,9 +80,12 @@ const Sidebar = ({
             fontSize: 14,
             fontFamily: ScienceGothic.style.fontFamily,
             color: COLORS.TEXT_PRIMARY,
-            "::placeholder": {
-              color: COLORS.TEXT_SECONDARY,
-              opacity: 1,
+            "& .MuiInputBase-input": {
+              py: 0.5,
+              "::placeholder": {
+                color: COLORS.TEXT_SECONDARY,
+                opacity: 0.7,
+              },
             },
           }}
         />
@@ -107,7 +110,7 @@ const Sidebar = ({
       {/* CHAT HISTORY */}
       <Box sx={{ flex: 1, overflowY: "auto" }}>
         {chats
-          .filter((chat) => chat.title !== "New Chat") 
+          .filter((chat) => chat.title !== "New Chat")
           .map((chat) => (
             <Box
               key={chat.id}
@@ -120,7 +123,7 @@ const Sidebar = ({
                 py: 1.2,
                 mb: 0.5,
                 borderRadius: "10px",
-                
+
                 cursor: "pointer",
                 backgroundColor:
                   chat.id === activeChatId ? COLORS.SECONDARY : "transparent",
