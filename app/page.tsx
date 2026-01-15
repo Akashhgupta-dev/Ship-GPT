@@ -164,7 +164,6 @@ export default function LoginPage() {
     initialValues: {
       otp: "",
       newPassword: "",
-      confirmPassword: "",
     },
     validationSchema: Yup.object({
       otp: Yup.string()
@@ -173,9 +172,6 @@ export default function LoginPage() {
       newPassword: Yup.string()
         .min(6, "Password must be at least 6 characters")
         .required("New password is required"),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref("newPassword")], "Passwords must match")
-        .required("Please confirm password"),
     }),
     onSubmit: async (values) => {
       setLoading(true);

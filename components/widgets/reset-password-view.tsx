@@ -30,7 +30,6 @@ const ResetPasswordView = ({
   resendCooldown = 0,
 }: ResetPasswordViewProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const textFieldStyle = {
     "& .MuiOutlinedInput-root": {
@@ -95,19 +94,104 @@ const ResetPasswordView = ({
 
       <form onSubmit={formik.handleSubmit}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <TextField
-            fullWidth
-            label="OTP Code"
-            id="otp"
-            name="otp"
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.otp}
-            onChange={formik.handleChange}
-            error={formik.touched.otp && Boolean(formik.errors.otp)}
-            helperText={formik.touched.otp && formik.errors.otp}
-            sx={textFieldStyle}
-            placeholder="Enter 4-digit code"
-          />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
+              mb: 1,
+            }}
+          >
+            {[0, 1, 2, 3].map((index) => (
+              <TextField
+                key={index}
+                id={`digit-${index}`}
+                variant="outlined"
+                autoFocus={index === 0}
+                value={(formik.values.otp || "")[index] || ""}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^0-9]/g, "");
+                  const newOtp = (formik.values.otp || "").split("");
+
+                  if (val.length <= 1) {
+                    newOtp[index] = val;
+                  } else {
+                    newOtp[index] = val[val.length - 1];
+                  }
+
+                  const joinedOtp = newOtp.join("");
+                  formik.setFieldValue("otp", joinedOtp);
+
+                  if (val && index < 3) {
+                    const nextInput = document.getElementById(
+                      `digit-${index + 1}`
+                    );
+                    nextInput?.focus();
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Backspace" &&
+                    !(formik.values.otp || "")[index] &&
+                    index > 0
+                  ) {
+                    const prevInput = document.getElementById(
+                      `digit-${index - 1}`
+                    );
+                    prevInput?.focus();
+                  }
+                }}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const pastedData = e.clipboardData
+                    .getData("text")
+                    .slice(0, 4)
+                    .replace(/[^0-9]/g, "");
+                  if (pastedData) {
+                    formik.setFieldValue("otp", pastedData);
+                    const nextIndex = Math.min(pastedData.length, 3);
+                    const nextInput = document.getElementById(
+                      `digit-${nextIndex}`
+                    );
+                    nextInput?.focus();
+                  }
+                }}
+                inputProps={{
+                  maxLength: 1,
+                  inputMode: "numeric",
+                  autoComplete: "off",
+                  style: {
+                    textAlign: "center",
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                    padding: "12px 0",
+                  },
+                }}
+                sx={{
+                  ...textFieldStyle,
+                  flex: 1,
+                  "& .MuiOutlinedInput-root": {
+                    ...textFieldStyle["& .MuiOutlinedInput-root"],
+                    borderRadius: 2,
+                  },
+                }}
+              />
+            ))}
+          </Box>
+          {formik.touched.otp && formik.errors.otp && (
+            <Typography
+              variant="caption"
+              color="error"
+              sx={{
+                fontFamily: ScienceGothic.style.fontFamily,
+                mt: -1,
+                mb: 1,
+                textAlign: "center",
+              }}
+            >
+              {formik.errors.otp}
+            </Typography>
+          )}
 
           <TextField
             fullWidth
@@ -132,38 +216,6 @@ const ResetPasswordView = ({
                     sx={{ color: "rgba(255, 255, 255, 0.7)" }}
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          <TextField
-            fullWidth
-            label="Confirm Password"
-            id="confirmPassword"
-            name="confirmPassword"
-            type={showConfirmPassword ? "text" : "password"}
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.confirmPassword}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.confirmPassword &&
-              Boolean(formik.errors.confirmPassword)
-            }
-            helperText={
-              formik.touched.confirmPassword && formik.errors.confirmPassword
-            }
-            sx={textFieldStyle}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    edge="end"
-                    sx={{ color: "rgba(255, 255, 255, 0.7)" }}
-                  >
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ),
