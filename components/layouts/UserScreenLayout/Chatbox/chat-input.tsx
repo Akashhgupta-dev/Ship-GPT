@@ -9,9 +9,10 @@ import { Poppins } from "@/utils/font";
 type Props = {
   onSend: (text: string) => void;
   activeChatId: string | null;
+  disabled?: boolean;
 };
 
-const ChatInput = ({ onSend, activeChatId }: Props) => {
+const ChatInput = ({ onSend, activeChatId, disabled }: Props) => {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -23,7 +24,7 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
   }, [activeChatId]);
 
   const handleSend = () => {
-    if (!value.trim()) return;
+    if (!value.trim() || disabled) return;
     onSend(value);
     setValue("");
   };
@@ -54,8 +55,11 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
           value={value}
           inputRef={inputRef}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Send a message..."
+          placeholder={disabled ? "AI is thinking..." : "Send a message..."}
           variant="outlined"
+          InputProps={{
+            readOnly: disabled,
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -73,10 +77,12 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
               fontSize: { xs: 13, md: 15 },
               fontFamily: Poppins.style.fontFamily,
               py: { xs: 2, md: 2.2 },
+              cursor: disabled ? "wait" : "text",
             },
             "& .MuiInputBase-input::placeholder": {
               fontFamily: Poppins.style.fontFamily,
               fontSize: { xs: 13, md: 15 },
+              opacity: disabled ? 0.5 : 1,
             },
             "& fieldset": {
               border: "none",
@@ -89,6 +95,8 @@ const ChatInput = ({ onSend, activeChatId }: Props) => {
           sx={{
             color: COLORS.TEXT_PRIMARY,
             p: { xs: 0.8, md: 1.2 },
+            opacity: disabled ? 0.5 : 1,
+            cursor: disabled ? "wait" : "pointer",
           }}
         >
           <SendIcon fontSize="medium" />

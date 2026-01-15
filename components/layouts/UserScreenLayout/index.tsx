@@ -21,6 +21,7 @@ const UserScreenLayout = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const router = useRouter();
 
   const [snakbar, setSnakbar] = useState({
@@ -82,7 +83,9 @@ const UserScreenLayout = () => {
 
   // SEND MESSAGE
   const handleSendMessage = async (text: string) => {
-    if (!activeChatId || !text.trim()) return;
+    if (!activeChatId || !text.trim() || isGenerating) return;
+
+    setIsGenerating(true);
 
     setChats((prev) =>
       prev.map((chat) =>
@@ -139,6 +142,7 @@ const UserScreenLayout = () => {
             wordIndex++;
           } else {
             clearInterval(interval);
+            setIsGenerating(false);
           }
         }, 30); // Adjust speed here
       })
@@ -162,6 +166,7 @@ const UserScreenLayout = () => {
               : chat
           )
         );
+        setIsGenerating(false);
       });
   };
 
@@ -241,7 +246,11 @@ const UserScreenLayout = () => {
         <ChatMessages messages={activeChat?.messages || []} />
 
         {/* INPUT */}
-        <ChatInput onSend={handleSendMessage} activeChatId={activeChatId} />
+        <ChatInput
+          onSend={handleSendMessage}
+          activeChatId={activeChatId}
+          disabled={isGenerating}
+        />
       </Box>
       <AppSnackbar
         open={snakbar.open}
