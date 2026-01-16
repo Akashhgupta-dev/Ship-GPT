@@ -97,7 +97,56 @@ export default function LoginPage() {
         const token = response.data?.data?.access_token;
 
         if (token) {
+          localStorage.removeItem("userId"); // Clear stale data
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userShipName");
           localStorage.setItem("accessToken", token);
+
+          console.log("LOGIN ROOT RESPONSE:", response.data);
+          const responseData = response.data?.data || response.data;
+
+          // Helper to decode JWT without a library
+          const decodeToken = (t: string) => {
+            try {
+              return JSON.parse(atob(t.split(".")[1]));
+            } catch (e) {
+              return {};
+            }
+          };
+
+          const decoded = decodeToken(token);
+          console.log("LOGIN TOKEN DECODED:", decoded);
+
+          const userId =
+            responseData?.id ||
+            responseData?.userId ||
+            responseData?.user?.id ||
+            decoded?.id ||
+            decoded?.sub ||
+            decoded?.referenceId;
+          const userRole =
+            responseData?.role ||
+            responseData?.user?.role ||
+            decoded?.role ||
+            "CREW";
+
+          console.log("LOGIN SUCCESS - Final Extracted Details:", {
+            userId,
+            userRole,
+            email: values.email,
+            idFromToken: decoded?.referenceId,
+          });
+
+          if (userId) {
+            localStorage.setItem("userId", String(userId));
+          } else {
+            console.warn("WARNING: No userId found in response or token!");
+          }
+
+          if (userRole) {
+            localStorage.setItem("userRole", userRole);
+          }
+
           setSnakbar({
             open: true,
             message: "Login successful! Redirecting...",

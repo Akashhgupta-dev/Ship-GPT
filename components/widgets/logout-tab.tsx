@@ -28,9 +28,9 @@ const LogoutTab = ({ onLogout }: Props) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 1.5,
+        gap: { xs: 1, md: 1.5 },
         px: 2,
-        py: 1.4,
+        py: { xs: 1, md: 1.4 },
         borderRadius: "10px",
         cursor: "pointer",
         color: COLORS.TEXT_SECONDARY,
@@ -44,13 +44,13 @@ const LogoutTab = ({ onLogout }: Props) => {
       <Typography
         sx={{
           fontFamily: ScienceGothic.style.fontFamily,
-          fontSize: { xs: "15px", md: "15px" },
+          fontSize: { xs: "13px", md: "15px" },
           lineHeight: "20px",
         }}
       >
         Logout
       </Typography>
-      <LogoutIcon sx={{ fontSize: 20 }} />
+      <LogoutIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
     </Box>
   );
 };

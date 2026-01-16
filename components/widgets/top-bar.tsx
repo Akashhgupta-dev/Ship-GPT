@@ -7,15 +7,26 @@ import { CATEGORIES, SHIPS } from "@/assets/generic-data";
 import CategoryTabs from "@/components/widgets/category-tabs";
 import ShipSelector from "@/components/widgets/ship-selector";
 import { COLORS } from "@/utils/enum";
+import { Typography } from "@mui/material";
+import { ScienceGothic } from "@/utils/font";
 
 type Props = {
   onMenuClick: () => void;
+  ship: string;
+  onShipChange: (value: string) => void;
+  category: string;
+  onCategoryChange: (value: string) => void;
+  userRole?: string | null;
 };
 
-const TopBar = ({ onMenuClick }: Props) => {
-  const [category, setCategory] = useState("mechanical");
-  const [ship, setShip] = useState(SHIPS[0].value);
-
+const TopBar = ({
+  onMenuClick,
+  ship,
+  onShipChange,
+  category,
+  onCategoryChange,
+  userRole,
+}: Props) => {
   return (
     <Box
       sx={{
@@ -57,12 +68,36 @@ const TopBar = ({ onMenuClick }: Props) => {
         <CategoryTabs
           value={category}
           categories={CATEGORIES}
-          onChange={setCategory}
+          onChange={onCategoryChange}
         />
       </Box>
 
       {/* RIGHT */}
-      <ShipSelector value={ship} onChange={setShip} />
+      {userRole === "CREW" ? (
+        <Box
+          sx={{
+            backgroundColor: COLORS.PRIMARY,
+            borderRadius: "12px",
+            px: 2,
+            py: 1,
+            minWidth: { xs: 110, md: 180 },
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              color: COLORS.TEXT_PRIMARY,
+              fontSize: { xs: 12, md: 14 },
+              fontFamily: ScienceGothic.style.fontFamily,
+              fontWeight: 500,
+            }}
+          >
+            {ship}
+          </Typography>
+        </Box>
+      ) : (
+        <ShipSelector value={ship} onChange={onShipChange} />
+      )}
     </Box>
   );
 };

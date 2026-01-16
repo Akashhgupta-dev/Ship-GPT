@@ -52,6 +52,8 @@ const ChatInput = ({ onSend, activeChatId, disabled }: Props) => {
       >
         <TextField
           fullWidth
+          multiline
+          maxRows={8}
           value={value}
           inputRef={inputRef}
           onChange={(e) => setValue(e.target.value)}
@@ -71,13 +73,15 @@ const ChatInput = ({ onSend, activeChatId, disabled }: Props) => {
             borderRadius: "16px",
             "& .MuiInputBase-root": {
               borderRadius: "16px",
-            },
-            input: {
               color: COLORS.TEXT_PRIMARY,
               fontSize: { xs: 13, md: 15 },
               fontFamily: Poppins.style.fontFamily,
-              py: { xs: 2, md: 2.2 },
+              px: 2,
+              py: { xs: 1.5, md: 2 },
               cursor: disabled ? "wait" : "text",
+            },
+            "& .MuiInputBase-input": {
+              p: 0,
             },
             "& .MuiInputBase-input::placeholder": {
               fontFamily: Poppins.style.fontFamily,

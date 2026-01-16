@@ -43,10 +43,10 @@ const Sidebar = ({
       <Typography
         sx={{
           fontFamily: ScienceGothic.style.fontFamily,
-          fontSize: { xs: 20, md: 22, lg: 26 },
+          fontSize: { xs: 18, md: 22, lg: 26 },
           fontWeight: 600,
           color: COLORS.TEXT_PRIMARY,
-          mb: 3,
+          mb: { xs: 2, md: 3 },
           pl: 0.5,
         }}
       >
@@ -60,7 +60,7 @@ const Sidebar = ({
           alignItems: "center",
           gap: 1,
           px: 1.5,
-          py: 1,
+          py: { xs: 0.6, md: 1 },
           mb: 2,
           borderRadius: "10px",
           backgroundColor: COLORS.SECONDARY,
@@ -68,8 +68,7 @@ const Sidebar = ({
       >
         <SearchIcon
           sx={{
-            fontSize: 18,
-
+            fontSize: { xs: 16, md: 18 },
             color: COLORS.TEXT_SECONDARY,
           }}
         />
@@ -77,11 +76,11 @@ const Sidebar = ({
           placeholder="Search chats..."
           sx={{
             flex: 1,
-            fontSize: 14,
+            fontSize: { xs: 13, md: 14 },
             fontFamily: ScienceGothic.style.fontFamily,
             color: COLORS.TEXT_PRIMARY,
             "& .MuiInputBase-input": {
-              py: 0.5,
+              py: { xs: 0.4, md: 0.5 },
               "::placeholder": {
                 color: COLORS.TEXT_SECONDARY,
                 opacity: 0.7,
@@ -97,7 +96,7 @@ const Sidebar = ({
       {/* RECENT TITLE */}
       <Typography
         sx={{
-          fontSize: 13,
+          fontSize: { xs: 11, md: 13 },
           color: COLORS.TEXT_SECONDARY,
           fontFamily: ScienceGothic.style.fontFamily,
           mt: 1,
@@ -119,8 +118,8 @@ const Sidebar = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                px: 2,
-                py: 1.2,
+                px: { xs: 1.5, md: 2 },
+                py: { xs: 0.8, md: 1.2 },
                 mb: 0.5,
                 borderRadius: "10px",
 
@@ -134,7 +133,7 @@ const Sidebar = ({
               }}
             >
               <Typography
-                fontSize={14}
+                fontSize={{ xs: 13, md: 14 }}
                 color={COLORS.TEXT_SECONDARY}
                 fontFamily={ScienceGothic.style.fontFamily}
                 noWrap
@@ -151,7 +150,7 @@ const Sidebar = ({
                   onDeleteChat(chat.id);
                 }}
                 sx={{
-                  fontSize: 18,
+                  fontSize: { xs: 16, md: 18 },
                   color: COLORS.TEXT_SECONDARY,
                   opacity: 1,
                   "&:hover": {

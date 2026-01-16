@@ -17,9 +17,9 @@ const NewChatButton = ({ onClick }: Props) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 1.2,
+        gap: { xs: 1, md: 1.2 },
         px: 1.5,
-        py: 1.4,
+        py: { xs: 1, md: 1.4 },
         mb: 2,
         borderRadius: "12px",
         backgroundColor: COLORS.SECONDARY,
@@ -32,14 +32,14 @@ const NewChatButton = ({ onClick }: Props) => {
     >
       <AddIcon
         sx={{
-          fontSize: 20,
+          fontSize: { xs: 18, md: 20 },
           color: COLORS.TEXT_PRIMARY,
         }}
       />
 
       <Typography
         sx={{
-          fontSize: 15,
+          fontSize: { xs: 13, md: 15 },
           lineHeight: "20px",
           color: COLORS.TEXT_PRIMARY,
           fontFamily: ScienceGothic.style.fontFamily,

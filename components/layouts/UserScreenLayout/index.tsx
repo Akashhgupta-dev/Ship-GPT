@@ -15,6 +15,8 @@ import { ChatItem } from "@/utils/types";
 import AppSnackbar from "@/components/widgets/snakbar";
 import { useRouter } from "next/navigation";
 import { Poppins } from "@/utils/font";
+import { authControllers } from "@/api/auth";
+import { SHIPS } from "@/assets/generic-data";
 
 const UserScreenLayout = () => {
   const [chats, setChats] = useState<ChatItem[]>([]);
@@ -22,6 +24,20 @@ const UserScreenLayout = () => {
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [ship, setShip] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("userShipName") || "";
+    }
+    return "";
+  });
+  const [shipId, setShipId] = useState(3);
+  const [category, setCategory] = useState("mechanical");
+  const [userRole, setUserRole] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("userRole");
+    }
+    return null;
+  });
   const router = useRouter();
 
   const [snakbar, setSnakbar] = useState({
@@ -72,6 +88,30 @@ const UserScreenLayout = () => {
       setActiveChatId(firstChat.id);
       hasInitializedChat.current = true;
     }
+
+    const fetchUserMetadata = async () => {
+      const role = localStorage.getItem("userRole");
+      const userId = localStorage.getItem("userId");
+
+      if (role === "CREW" && userId) {
+        try {
+          const response = await authControllers.getUserById(userId, role);
+          const userData = response.data?.data;
+
+          if (userData?.ship?.name) {
+            setShip(userData.ship.name);
+            localStorage.setItem("userShipName", userData.ship.name);
+          }
+          if (userData?.ship?.id) {
+            setShipId(userData.ship.id);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user metadata:", error);
+        }
+      }
+    };
+
+    fetchUserMetadata();
   }, []);
 
   // MANUAL NEW CHAT
@@ -88,19 +128,25 @@ const UserScreenLayout = () => {
     setIsGenerating(true);
 
     setChats((prev) =>
-      prev.map((chat) =>
-        chat.id === activeChatId
-          ? {
-              ...chat,
-              title: chat.title === "New Chat" ? text.slice(0, 30) : chat.title,
-              messages: [
-                ...chat.messages,
-                { role: "user", content: text },
-                { role: "assistant", content: "Thinking..." },
-              ],
-            }
-          : chat
-      )
+      prev.map((chat) => {
+        if (chat.id === activeChatId) {
+          const WELCOME_TEXT = "Welcome to ShipGPT. I’m here to help you.";
+          const filteredMessages = chat.messages.filter(
+            (m) => !(m.role === "assistant" && m.content === WELCOME_TEXT)
+          );
+
+          return {
+            ...chat,
+            title: chat.title === "New Chat" ? text.slice(0, 30) : chat.title,
+            messages: [
+              ...filteredMessages,
+              { role: "user", content: text },
+              { role: "assistant", content: "Thinking..." },
+            ],
+          };
+        }
+        return chat;
+      })
     );
 
     chatControllers
@@ -110,7 +156,6 @@ const UserScreenLayout = () => {
         companyId: 2,
       })
       .then((res) => {
-        console.log("res", res);
         const aiReply =
           res.data?.data?.answer ||
           res.data?.data?.response ||
@@ -144,10 +189,17 @@ const UserScreenLayout = () => {
             clearInterval(interval);
             setIsGenerating(false);
           }
-        }, 30); // Adjust speed here
+        }, 30);
       })
       .catch((err) => {
-        console.error("AI Chat Error:", err);
+        console.error("AI DEBUG - Chat Error:", err);
+        if (err.response) {
+          console.error("AI DEBUG - Error Response Data:", err.response.data);
+          console.error(
+            "AI DEBUG - Error Response Status:",
+            err.response.status
+          );
+        }
 
         setChats((prev) =>
           prev.map((chat) =>
@@ -240,7 +292,16 @@ const UserScreenLayout = () => {
         }}
       >
         {/* TOP BAR */}
-        <TopBar onMenuClick={() => setMobileSidebarOpen(true)} />
+        <TopBar
+          onMenuClick={() => setMobileSidebarOpen(true)}
+          ship={ship}
+          onShipChange={(newShip: string) => {
+            setShip(newShip);
+          }}
+          category={category}
+          onCategoryChange={setCategory}
+          userRole={userRole}
+        />
 
         {/* CHAT */}
         <ChatMessages messages={activeChat?.messages || []} />

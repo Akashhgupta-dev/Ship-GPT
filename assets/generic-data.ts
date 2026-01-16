@@ -40,10 +40,4 @@ export const CHAT_HISTORY: ChatHistoryItem[] = [
     title: "Compliance checklist",
   },
 ];
-export const SHIPS = [
-  { label: "MV Ocean Star", value: "ocean_star" },
-  { label: "MV Blue Horizon", value: "blue_horizon" },
-  { label: "SS Neptune", value: "neptune" },
-  { label: "MV Sea Explorer", value: "sea_explorer" },
-  { label: "MV Atlantic Pearl", value: "atlantic_pearl" },
-];
+export const SHIPS: { label: string; value: string }[] = [];

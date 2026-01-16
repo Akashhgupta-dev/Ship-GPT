@@ -1,3 +1,4 @@
+"use client";
 import UserScreenLayout from '@/components/layouts/UserScreenLayout'
 import React from 'react'
 
