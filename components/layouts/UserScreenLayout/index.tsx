@@ -355,7 +355,7 @@ const UserScreenLayout = () => {
     chatControllers
       .askAI({
         query: text,
-        shipId: shipId,
+        shipId: 2,
         companyId: 2,
         type: category.toUpperCase(),
       })

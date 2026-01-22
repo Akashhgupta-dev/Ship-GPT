@@ -5,9 +5,11 @@ const publicApi = axios.create({
 });
 const secureApi = axios.create({
   baseURL: serverConstant.authenticationUrls,
+  timeout: 600000,
 });
 const chatApi = axios.create({
   baseURL: serverConstant.chatUrls,
+  timeout: 600000,
 });
 secureApi.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
