@@ -57,13 +57,20 @@ const MessageItem = ({ msg }: { msg: ChatMessage }) => {
     }
   };
 
+  // console.log("RENDERING MESSAGE:", msg);
   return (
     <Box
       sx={{
-        mr: msg.role === "user" ? { xs: 2, md: 6.5 } : 0,
+        mr:
+          String(msg.role).toLowerCase().trim() === "user"
+            ? { xs: 2, md: 6.5 }
+            : 0,
         mb: { xs: 2, md: 3 },
         display: "flex",
-        justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+        justifyContent:
+          String(msg.role).toLowerCase().trim() === "user"
+            ? "flex-end"
+            : "flex-start",
         position: "relative",
       }}
     >
@@ -71,11 +78,15 @@ const MessageItem = ({ msg }: { msg: ChatMessage }) => {
         sx={{
           maxWidth: { xs: "90%", md: "85%" },
           p:
-            msg.role === "user"
+            String(msg.role).toLowerCase().trim() === "user"
               ? { xs: "8px 16px", md: "10px 24px" }
               : { xs: 1, md: 1.5 },
-          borderRadius: msg.role === "user" ? "16px" : "12px",
-          backgroundColor: msg.role === "user" ? COLORS.ACCENT : "transparent",
+          borderRadius:
+            String(msg.role).toLowerCase().trim() === "user" ? "16px" : "12px",
+          backgroundColor:
+            String(msg.role).toLowerCase().trim() === "user"
+              ? COLORS.ACCENT
+              : "transparent",
           color: COLORS.TEXT_PRIMARY,
           border: "none",
           boxShadow: "none",
@@ -157,7 +168,7 @@ const MessageItem = ({ msg }: { msg: ChatMessage }) => {
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {(msg.content || "").replace(/\s+([a-z\d]\))/gi, "\n\n$1")}
               </ReactMarkdown>
-              {msg.role === "assistant" &&
+              {String(msg.role).toLowerCase().trim() === "assistant" &&
                 !isWelcome &&
                 msg.content !== "Thinking..." && (
                   <Box

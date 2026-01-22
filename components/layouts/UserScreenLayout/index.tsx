@@ -14,23 +14,21 @@ import { COLORS } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 import AppSnackbar from "@/components/widgets/snakbar";
 import { useRouter } from "next/navigation";
-import { Poppins } from "@/utils/font";
 import { authControllers } from "@/api/auth";
-import { SHIPS } from "@/assets/generic-data";
 
 const UserScreenLayout = () => {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const loadedChatsRef = useRef(new Set<string>());
   const [ship, setShip] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("userShipName") || "";
     }
     return "";
   });
-  const [shipId, setShipId] = useState(3);
+  const [shipId, setShipId] = useState(2);
   const [category, setCategory] = useState("mechanical");
   const [userRole, setUserRole] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
@@ -48,7 +46,7 @@ const UserScreenLayout = () => {
 
   const handleCloseSnackbar = (
     event?: React.SyntheticEvent | Event,
-    reason?: string
+    reason?: string,
   ) => {
     if (reason === "clickaway") {
       return;
@@ -76,14 +74,22 @@ const UserScreenLayout = () => {
     messages: [
       {
         role: "assistant",
-        content: "Welcome to ShipGPT. I’m here to help you.",
+        content: "Welcome to ShipGPT. I'm here to help you.",
       },
     ],
   });
 
   useEffect(() => {
+    console.log("UserScreenLayout MOUNTED");
+    console.log("localStorage check:", {
+      accessToken: !!localStorage.getItem("accessToken"),
+      userId: localStorage.getItem("userId"),
+      userRole: localStorage.getItem("userRole"),
+    });
+
     if (!hasInitializedChat.current) {
       const firstChat = createNewChat();
+      console.log("Initializing first chat:", firstChat.id);
       setChats([firstChat]);
       setActiveChatId(firstChat.id);
       hasInitializedChat.current = true;
@@ -97,6 +103,7 @@ const UserScreenLayout = () => {
         try {
           const response = await authControllers.getUserById(userId, role);
           const userData = response.data?.data;
+          console.log("USER METADATA DEBUG:", userData);
 
           if (userData?.ship?.name) {
             setShip(userData.ship.name);
@@ -114,6 +121,187 @@ const UserScreenLayout = () => {
     fetchUserMetadata();
   }, []);
 
+  // 1. FETCH HISTORY DEPENDING ON CATEGORY
+  useEffect(() => {
+    const fetchHistory = async () => {
+      console.log("Fetching history for category:", category);
+      try {
+        const res = await chatControllers.getChatHistory(
+          category.toUpperCase(),
+        );
+
+        const historyData = res.data?.data || [];
+        console.log("API RAW HISTORY RESPONSE:", {
+          status: res.status,
+          itemCount: historyData.length,
+          data: historyData,
+        });
+
+        console.log("HISTORY DATA SAMPLE:", historyData[0]);
+        const mappedHistory: ChatItem[] = historyData.map((item: any) => {
+          let title =
+            item.question || item.query || item.user_query || item.prompt;
+
+          const isGeneric = (str: string) =>
+            !str ||
+            [
+              "MECHANICAL",
+              "COMPLIANCE",
+              "UNTITLED CHAT",
+              "CHAT SESSION",
+              "CREW",
+              "NEW CHAT",
+            ].includes(str.toUpperCase());
+
+          if (isGeneric(title)) {
+            // Peek into first message if it's an array
+            const firstMsg = Array.isArray(item.messages)
+              ? item.messages.find((m: any) => m.role === "user")?.content
+              : null;
+
+            const firstInt = Array.isArray(item.interactions)
+              ? item.interactions[0].query || item.interactions[0].question
+              : null;
+
+            title = firstMsg || firstInt || item.title || title;
+          }
+
+          if (isGeneric(title)) {
+            title =
+              Object.values(item).find(
+                (v) =>
+                  typeof v === "string" &&
+                  v.length > 3 &&
+                  v.length < 100 &&
+                  !v.includes("-") &&
+                  ![
+                    "CREW",
+                    "ADMIN",
+                    "SUPERINTENDENT",
+                    "FLEET",
+                    "MECHANICAL",
+                    "COMPLIANCE",
+                  ].includes(v.toUpperCase()),
+              ) || "";
+          }
+
+          return {
+            id: item.id || item._id,
+            title: title ? String(title).slice(0, 50) : "Untitled Chat",
+            messages: [],
+          };
+        });
+
+        const finalHistory = mappedHistory;
+        console.log("MAPPED HISTORY READY:", finalHistory);
+
+        setChats((prevChats) => {
+          console.log("Merging history. Prev chats count:", prevChats.length);
+          const localChats = prevChats.filter(
+            (c) =>
+              c.messages.length > 1 && !finalHistory.some((h) => h.id === c.id),
+          );
+
+          let finalItems = [...localChats, ...finalHistory];
+
+          if (finalItems.length === 0) {
+            finalItems = [createNewChat()];
+          }
+
+          console.log("FINAL CHATS STATE SET:", finalItems);
+          return finalItems;
+        });
+      } catch (err) {
+        console.error("Failed to fetch chat history:", err);
+      }
+    };
+
+    if (category) {
+      fetchHistory();
+    }
+  }, [category]);
+
+  useEffect(() => {
+    if (chats.length > 0) {
+      if (!activeChatId || !chats.find((c) => c.id === activeChatId)) {
+        setActiveChatId(chats[0].id);
+      }
+    }
+  }, [chats, activeChatId]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!activeChatId) return;
+
+      if (loadedChatsRef.current.has(activeChatId)) return;
+
+      const chat = chats.find((c) => c.id === activeChatId);
+      if (!chat || chat.messages.length > 0) return;
+
+      try {
+        const res = await chatControllers.getConversationById(activeChatId);
+        const data = res.data?.data;
+
+        if (data) {
+          let newMessages: { role: "user" | "assistant"; content: string }[] =
+            [];
+
+          const parseInteraction = (m: any) => {
+            const pair: { role: "user" | "assistant"; content: string }[] = [];
+
+            const userContent =
+              m.question || m.query || m.user_query || m.prompt;
+            if (userContent) {
+              pair.push({ role: "user", content: String(userContent) });
+            }
+
+            const assistantContent =
+              m.answer || m.response || m.content || m.text;
+            if (assistantContent) {
+              pair.push({
+                role: "assistant",
+                content: String(assistantContent),
+              });
+            }
+
+            return pair;
+          };
+
+          // ROBUST PARSING LOGIC
+          if (Array.isArray(data)) {
+            // Case: data is array of interactions
+            newMessages = data.flatMap(parseInteraction);
+          } else if (data.chats && Array.isArray(data.chats)) {
+            // Case: data.chats is array (Found in logs)
+            newMessages = data.chats.flatMap(parseInteraction);
+          } else if (data.messages && Array.isArray(data.messages)) {
+            // Case: data.messages is array
+            newMessages = data.messages.flatMap(parseInteraction);
+          } else if (data.interactions && Array.isArray(data.interactions)) {
+            // Case: data.interactions is array (common in some backends)
+            newMessages = data.interactions.flatMap(parseInteraction);
+          } else {
+            // Case: Single object interaction
+            newMessages = parseInteraction(data);
+          }
+
+          setChats((prev) =>
+            prev.map((c) =>
+              c.id === activeChatId ? { ...c, messages: newMessages } : c,
+            ),
+          );
+
+          loadedChatsRef.current.add(activeChatId);
+        } else {
+          console.warn("No data found in fetchMessages response");
+        }
+      } catch (err) {
+        console.error("Failed to load conversation details:", err);
+      }
+    };
+
+    fetchMessages();
+  }, [activeChatId, chats]);
   // MANUAL NEW CHAT
   const handleNewChat = () => {
     const newChat = createNewChat();
@@ -130,14 +318,29 @@ const UserScreenLayout = () => {
     setChats((prev) =>
       prev.map((chat) => {
         if (chat.id === activeChatId) {
-          const WELCOME_TEXT = "Welcome to ShipGPT. I’m here to help you.";
+          const WELCOME_TEXT = "Welcome to ShipGPT. I'm here to help you.";
           const filteredMessages = chat.messages.filter(
-            (m) => !(m.role === "assistant" && m.content === WELCOME_TEXT)
+            (m) =>
+              !(
+                m.role === "assistant" &&
+                (m.content === WELCOME_TEXT ||
+                  m.content.includes("Welcome to ShipGPT"))
+              ),
           );
+
+          const isGeneric =
+            !chat.title ||
+            [
+              "NEW CHAT",
+              "UNTITLED CHAT",
+              "CHAT SESSION",
+              "MECHANICAL",
+              "COMPLIANCE",
+            ].includes(chat.title.toUpperCase());
 
           return {
             ...chat,
-            title: chat.title === "New Chat" ? text.slice(0, 30) : chat.title,
+            title: isGeneric ? text.slice(0, 30) : chat.title,
             messages: [
               ...filteredMessages,
               { role: "user", content: text },
@@ -146,21 +349,29 @@ const UserScreenLayout = () => {
           };
         }
         return chat;
-      })
+      }),
     );
 
     chatControllers
       .askAI({
         query: text,
-        shipId: 3,
+        shipId: shipId,
         companyId: 2,
+        type: category.toUpperCase(),
       })
       .then((res) => {
+        console.log("ASK AI RESPONSE FULL:", JSON.stringify(res, null, 2));
         const aiReply =
           res.data?.data?.answer ||
           res.data?.data?.response ||
-          res.data ||
+          res.data?.answer ||
+          res.data?.response ||
+          (typeof res.data === "string"
+            ? res.data
+            : JSON.stringify(res.data)) ||
           "No response from AI";
+
+        console.log("PARSED AI REPLY:", aiReply);
 
         // TYPEWRITER EFFECT
         const words = aiReply.split(" ");
@@ -178,11 +389,11 @@ const UserScreenLayout = () => {
                       messages: chat.messages.map((msg, index) =>
                         index === chat.messages.length - 1
                           ? { role: "assistant", content: currentText }
-                          : msg
+                          : msg,
                       ),
                     }
-                  : chat
-              )
+                  : chat,
+              ),
             );
             wordIndex++;
           } else {
@@ -192,15 +403,7 @@ const UserScreenLayout = () => {
         }, 30);
       })
       .catch((err) => {
-        console.error("AI DEBUG - Chat Error:", err);
-        if (err.response) {
-          console.error("AI DEBUG - Error Response Data:", err.response.data);
-          console.error(
-            "AI DEBUG - Error Response Status:",
-            err.response.status
-          );
-        }
-
+        console.error("ASK AI ERROR:", err);
         setChats((prev) =>
           prev.map((chat) =>
             chat.id === activeChatId
@@ -212,11 +415,11 @@ const UserScreenLayout = () => {
                           role: "assistant",
                           content: "Something went wrong. Please try again.",
                         }
-                      : msg
+                      : msg,
                   ),
                 }
-              : chat
-          )
+              : chat,
+          ),
         );
         setIsGenerating(false);
       });
