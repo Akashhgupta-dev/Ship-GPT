@@ -10,7 +10,7 @@ import MobileSidebarDrawer from "@/components/widgets/mobile-sidebar";
 import ChatMessages from "@/components/layouts/UserScreenLayout/Chatbox/chat-message";
 import ChatInput from "@/components/layouts/UserScreenLayout/Chatbox/chat-input";
 
-import { COLORS } from "@/utils/enum";
+import { COLORS, CHAT_MODEL } from "@/utils/enum";
 import { ChatItem } from "@/utils/types";
 import AppSnackbar from "@/components/widgets/snakbar";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ const UserScreenLayout = () => {
     }
     return null;
   });
+  const [model, setModel] = useState<CHAT_MODEL>(CHAT_MODEL.OPENAI);
   const router = useRouter();
 
   const [snakbar, setSnakbar] = useState({
@@ -358,6 +359,7 @@ const UserScreenLayout = () => {
         shipId: 2,
         companyId: 2,
         type: category.toUpperCase(),
+        model,
       })
       .then((res) => {
         console.log("ASK AI RESPONSE FULL:", JSON.stringify(res, null, 2));

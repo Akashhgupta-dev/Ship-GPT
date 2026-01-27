@@ -2,13 +2,14 @@ import { chatApi } from "./config";
 import { serverConstant } from "./server-constant";
 
 export const chatControllers = {
-  askAI: async ({ query, shipId, companyId, type }) => {
+  askAI: async ({ query, shipId, companyId, type, model }) => {
     try {
       const res = await chatApi.post(serverConstant.retrivalUrls.chat, {
         query,
         shipId,
         companyId,
         type,
+        model,
       });
       return res;
     } catch (error) {

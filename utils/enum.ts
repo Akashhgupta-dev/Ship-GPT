@@ -6,4 +6,9 @@ export const COLORS = {
   TEXT_PRIMARY: "#ffffff",
   TEXT_SECONDARY: "#e0e0e0",
   ACCENT: "#333333",
-} 
+};
+
+export enum CHAT_MODEL {
+  PYTHON = "python",
+  OPENAI = "openai",
+}
