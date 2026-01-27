@@ -36,7 +36,7 @@ const UserScreenLayout = () => {
     }
     return null;
   });
-  const [model, setModel] = useState<CHAT_MODEL>(CHAT_MODEL.OPENAI);
+  const [model, setModel] = useState<CHAT_MODEL>(CHAT_MODEL.PYTHON);
   const router = useRouter();
 
   const [snakbar, setSnakbar] = useState({
@@ -509,7 +509,10 @@ const UserScreenLayout = () => {
         />
 
         {/* CHAT */}
-        <ChatMessages messages={activeChat?.messages || []} />
+        <ChatMessages
+          key={activeChatId}
+          messages={activeChat?.messages || []}
+        />
 
         {/* INPUT */}
         <ChatInput

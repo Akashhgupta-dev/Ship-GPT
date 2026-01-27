@@ -26,7 +26,12 @@ const NewChatButton = ({ onClick }: Props) => {
         cursor: "pointer",
         transition: "background 0.2s ease",
         "&:hover": {
-          backgroundColor: COLORS.SECONDARY,
+          backgroundColor: COLORS.ACCENT,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        },
+        "&:active": {
+          backgroundColor: COLORS.ACCENT,
+          transform: "scale(0.98)",
         },
       }}
     >

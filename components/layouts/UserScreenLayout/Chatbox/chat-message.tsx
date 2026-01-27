@@ -227,6 +227,11 @@ const ChatMessages = ({ messages }: Props) => {
         display: "flex",
         flexDirection: "column",
         scrollBehavior: "smooth",
+        animation: "fadeInUp 0.4s ease-out",
+        "@keyframes fadeInUp": {
+          "0%": { opacity: 0, transform: "translateY(10px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
       }}
     >
       <Box
