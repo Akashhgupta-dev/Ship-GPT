@@ -123,22 +123,16 @@ const UserScreenLayout = () => {
   }, []);
 
   // 1. FETCH HISTORY DEPENDING ON CATEGORY
+  // 1. FETCH HISTORY DEPENDING ON CATEGORY
   useEffect(() => {
     const fetchHistory = async () => {
-      console.log("Fetching history for category:", category);
       try {
         const res = await chatControllers.getChatHistory(
           category.toUpperCase(),
         );
 
         const historyData = res.data?.data || [];
-        console.log("API RAW HISTORY RESPONSE:", {
-          status: res.status,
-          itemCount: historyData.length,
-          data: historyData,
-        });
 
-        console.log("HISTORY DATA SAMPLE:", historyData[0]);
         const mappedHistory: ChatItem[] = historyData.map((item: any) => {
           let title =
             item.question || item.query || item.user_query || item.prompt;
@@ -194,22 +188,30 @@ const UserScreenLayout = () => {
         });
 
         const finalHistory = mappedHistory;
-        console.log("MAPPED HISTORY READY:", finalHistory);
 
         setChats((prevChats) => {
-          console.log("Merging history. Prev chats count:", prevChats.length);
           const localChats = prevChats.filter(
             (c) =>
-              c.messages.length > 1 && !finalHistory.some((h) => h.id === c.id),
+              (c.id === activeChatId || c.messages.length > 0) &&
+              !finalHistory.some((h) => h.id === c.id),
           );
 
-          let finalItems = [...localChats, ...finalHistory];
+          // Ensure New Chat is always first if it exists locally
+          const newChat = localChats.find(
+            (c) => c.title === "New Chat" && c.messages.length === 1,
+          );
+          const otherLocals = localChats.filter((c) => c !== newChat);
 
+          let finalItems = newChat
+            ? [newChat, ...otherLocals, ...finalHistory]
+            : [...otherLocals, ...finalHistory];
+
+          // If no chats at all, create one
           if (finalItems.length === 0) {
-            finalItems = [createNewChat()];
+            const fresh = createNewChat();
+            finalItems = [fresh];
           }
 
-          console.log("FINAL CHATS STATE SET:", finalItems);
           return finalItems;
         });
       } catch (err) {
@@ -240,8 +242,11 @@ const UserScreenLayout = () => {
       if (!chat || chat.messages.length > 0) return;
 
       try {
+        console.log("DEBUG: FETCHING MESSAGES FOR ID:", activeChatId);
         const res = await chatControllers.getConversationById(activeChatId);
+        console.log("DEBUG: API RESPONSE:", res);
         const data = res.data?.data;
+        console.log("DEBUG: PARSED DATA:", data);
 
         if (data) {
           let newMessages: { role: "user" | "assistant"; content: string }[] =
@@ -363,7 +368,7 @@ const UserScreenLayout = () => {
       })
       .then((res) => {
         console.log("ASK AI RESPONSE FULL:", JSON.stringify(res, null, 2));
-        const aiReply =
+        let aiReply =
           res.data?.data?.answer ||
           res.data?.data?.response ||
           res.data?.answer ||
@@ -373,7 +378,25 @@ const UserScreenLayout = () => {
             : JSON.stringify(res.data)) ||
           "No response from AI";
 
-        console.log("PARSED AI REPLY:", aiReply);
+        console.log("PARSED AI REPLY RAW:", aiReply);
+
+        // STREAM PARSING LOGIC
+        if (
+          typeof aiReply === "string" &&
+          (aiReply.includes("data: ") || aiReply.includes(": stream-started"))
+        ) {
+          const lines = aiReply.split("\n");
+          const parsedLines = lines
+            .map((line) => line.trim())
+            .filter(
+              (line) => line.startsWith("data: ") && !line.includes("[DONE]"),
+            )
+            .map((line) => line.replace(/^data: /, "").trim());
+
+          aiReply = parsedLines.join(" ");
+        }
+
+        console.log("CLEANED AI REPLY:", aiReply);
 
         // TYPEWRITER EFFECT
         const words = aiReply.split(" ");
